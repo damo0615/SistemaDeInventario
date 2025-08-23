@@ -1,0 +1,138 @@
+<?php
+    include '../vistas/php_inyec.php';
+    include '../sesion_time.php';
+    include '..\db\db.php';
+    $user_id = $_SESSION['id'];
+    if(!isset($user_id)) {
+        header("location:../sesion/login.php");
+    }
+    if(!empty($_POST['send'])){
+        $password = limpiar_cadena($_POST['password']);
+        $c_password = limpiar_cadena($_POST['c_password']);
+        $opcion = array("cost"=>12);
+        if (preg_match("/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$/", $password)){
+                if($c_password == $password){
+                    $clave = password_hash($password, PASSWORD_BCRYPT, $opcion);
+                    $query = mysqli_query($conn, "UPDATE usuario SET password='$clave' WHERE id='$user_id'");
+                    if(!$query){
+                        die("Query Failed");
+                    }
+                    header('location:../vistas/dashboard.php');
+                }else{
+                    echo "<script>window.alert('Las Contraseñas deben coincidir')</script>";
+                }
+        }else{
+            echo "<script>window.alert('La contraseña debe tener al menos un numero y un caracter especial')</script>";
+        }
+    }
+        
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=chrome">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Inventario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <!-- Barra de navegaci�n -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-boxes text-primary-500 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-gray-900 dark:text-white">Inventory Pro</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="../vistas/dashboard.php" class="border-primary-500 text-gray-900 dark:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="../vistas/inventario.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Inventario
+                        </a>
+                        <a href="../vistas/reporte.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Reportes
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button id="mobile-menu-button" type="button" class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5 mr-1">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <div class="ml-3 relative">
+                        <div>
+                            <a href="usuario.php">
+                                <button type="button" class="bg-white dark:bg-gray-800 rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                                <span class="sr-only">Open user menu</span>
+                                <div class="h-8 w-8 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold">AD</div>
+                            </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <!-- Men� m�vil -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="../vistas/dashboard.php" class="bg-primary-50 border-primary-500 text-primary-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:bg-gray-700 dark:text-primary-400">
+                    Dashboard
+                </a>
+                <a href="../vistas/inventario.php" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
+                    Inventario
+                </a>
+                <a href="../vistas/reporte.php" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
+                    Reportes
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div id="add-product-modal" class="inset-0 ">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-10">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full dark:bg-gray-800">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 dark:bg-gray-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+                            Actualice su contraseña
+                        </h3>
+                    </div>
+                    <div class="mt-2">
+                        <form action="actualizar.php" method="POST">
+                        <div class="grid grid-cols-6 gap-8">
+                            <div class="col-span-5">
+                                <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Contraseña</label>
+                                <input type="password" name="password" id="pwd" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg dark:bg-gray-600 dark:border-gray-500 dark:text-white" required minlength="16">
+                                <input id="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" onclick="pwd.type = this.checked ? 'text' : 'password'" />
+                            </div>                    
+                            <div class="col-span-5">
+                                <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Confirme la Contraseña</label>
+                                <input type="password" name="c_password" id="pwd1" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required minlength="16">
+                                <input id="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" onclick="pwd1.type = this.checked ? 'text' : 'password'" />
+                            </div> 
+                        </div>
+                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-700">
+                            <input type="submit" id="save-product" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Guardar Usuario"></input>
+                            <a href="../usuario.php">
+                                <button type="button" id="cancel-add" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700">Cancelar
+                            </button>
+                            </a>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    
+    <script src="../js/main.js"></script>
+</body>
+</html>
