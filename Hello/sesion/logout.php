@@ -14,14 +14,6 @@ if(!$bitacora){
 }
 session_unset();
 session_destroy();
-
-echo 
-    "<script>
-            userConfirmed = window.alert('sesion cerrada correctamente');  
-            window.location.href(login.php);          
-    </script>";
-
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -60,4 +52,5 @@ echo
     </nav>
     <script src="../js/main.js"></script>
 </body>
+
 </html>
