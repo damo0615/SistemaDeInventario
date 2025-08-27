@@ -1,10 +1,11 @@
 <?php
 include '../db/db.php';
 include '../sesion_time.php';
-    session_start();
-    $user_id = $_SESSION['id'];
-    if(!isset($user_id)) {
-        header("location:../sesion/login.php");
+session_start();
+$user_id = $_SESSION['id'];
+$username = $_SESSION['usern'];
+if(!isset($user_id)) {
+    header("location:../sesion/login.php");
 }
 
 
@@ -103,6 +104,15 @@ if (isset($_POST['procesar_venta']) && !empty($_SESSION['lista_venta'])) {
             $conn->commit();
             $_SESSION['lista_venta'] = [];
             $mensaje = "Venta procesada con éxito.";
+            $accion = "El usuario ".$username." ha registrado un despacho";
+            $bitacora = "INSERT INTO bitacora (accion,id_user) VALUES (?,?)";
+            $stmt_bitacora = mysqli_prepare($conn, $bitacora);
+            mysqli_stmt_bind_param($stmt_bitacora, "si", $accion,$user_id);
+            mysqli_stmt_execute($stmt_bitacora);
+            if (!mysqli_stmt_execute($stmt_bitacora)) {
+                throw new Exception("Error al registrar el movimiento en la bitacora");
+            }
+                     
         } else {
             $conn->rollback();
             $mensaje = "Error al procesar la venta. La transacción ha sido revertida.";

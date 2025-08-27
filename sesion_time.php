@@ -7,10 +7,10 @@
 </head>
 <body>
     <script type="text/javascript">
-      n = 1000;
+      n = 200;
       var id = window.setInterval(function(){
         document.onmousemove = function(){
-          n = 1000;
+          n = 200;
         };
         n--;
         if(n == 0){

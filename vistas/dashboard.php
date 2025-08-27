@@ -6,7 +6,7 @@
         header("location:../sesion/login.php");
     }
     include '../db/db.php';
-    $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id LIMIT 10");
+    $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id INNER JOIN inventario ON inventario.id_producto = producto.id LIMIT 10");
     $prod = mysqli_query($conn, "SELECT count(*) AS total FROM producto");
     $pre = mysqli_query($conn, "SELECT SUM(precio) AS total FROM producto");
     $tags = mysqli_query($conn, "SELECT count(*) AS total FROM tag");

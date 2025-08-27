@@ -7,7 +7,7 @@
         header("location:../sesion/login.php");
     }
     include '../db/db.php';
-    $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id");
+    $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id INNER JOIN inventario ON inventario.id_producto = producto.id");
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -171,7 +171,7 @@
                                             $codigo = $prod['codigo'];
                                             $prov = $prod['nombrep'];
                                             $precio = $prod['precio'];
-                                            $stock = $prod['stock'];
+                                            $stock = $prod['cantidad'];
                                         ?>  
                                             
                                                 <td class="px-6 py-4 whitespace-nowrap">
