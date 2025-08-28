@@ -108,7 +108,6 @@ if (isset($_POST['procesar_venta']) && !empty($_SESSION['lista_venta'])) {
             $bitacora = "INSERT INTO bitacora (accion,id_user) VALUES (?,?)";
             $stmt_bitacora = mysqli_prepare($conn, $bitacora);
             mysqli_stmt_bind_param($stmt_bitacora, "si", $accion,$user_id);
-            mysqli_stmt_execute($stmt_bitacora);
             if (!mysqli_stmt_execute($stmt_bitacora)) {
                 throw new Exception("Error al registrar el movimiento en la bitacora");
             }

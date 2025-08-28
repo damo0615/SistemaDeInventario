@@ -17,6 +17,7 @@
     <title>Sistema de Inventario</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="../../style.css">
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegaci�n -->
@@ -168,23 +169,34 @@
                                                     </span>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <?php
-                                                        if($status == 0){
-                                                            echo '<button class="edit-product text-green-500 hover:text-green-600 mr-3" data-id="${product.id}">
-                                                        <i class="fa-solid fa-lock-open"></i>
-                                                        </button>';
-                                                        }else{
-                                                           echo '<button class="edit-product text-red-500 hover:text-red-600 mr-3" data-id="${product.id}">
-                                                        <i class="fa-solid fa-lock"></i>
-                                                        </button>'; 
-                                                        }
-                                                    ?>
+                                                    <a href="editar_status.php?edit=<?php echo $user['id']?>&status=<?php echo $status;?>" class="edit-product text-primary-500 hover:text-primary-600 mr-3" data-id="${product.id}">
+                                                        <?php
+                                                            if($status == 0){
+                                                                echo '<button class="edit-product text-green-500 hover:text-green-600 mr-3" data-id="${product.id}">
+                                                            <i class="fa-solid fa-lock-open"></i>
+                                                            </button>';
+                                                            }else{
+                                                               echo '<button class="edit-product text-red-500 hover:text-red-600 mr-3" data-id="${product.id}">
+                                                            <i class="fa-solid fa-lock"></i>
+                                                            </button>'; 
+                                                            }
+                                                        ?>
+                                                    </a>
                                                     <a href="editar_user_admin.php?edit=<?php echo $user['id']?>" class="edit-product text-primary-500 hover:text-primary-600 mr-3" data-id="${product.id}">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <button class="delete-product text-red-500 hover:text-red-600" data-id="${product.id}">
-                                                        <i class="fas fa-trash-alt"></i>
+                                                    <button onclick="window.mydialog<?php echo $user['id'];?>.showModal()">
+                                                        <i class="fas fa-trash-alt text-red-500"></i>
                                                     </button>
+                                                    <dialog id="mydialog<?php echo $user['id']; ?>">
+                                    <p>Introduzca la contraseña para eliminar el item</p>
+                                    <form action="delete_user.php" method="POST">
+                                        <input type="password" name="clave">
+                                        <input type="hidden" name="id" value="<?php echo $user['id']?>">
+                                        <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
+                                    </form>
+                                    <button onclick='window.mydialog<?php echo $user['id']; ?>.close();' class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
+                                </dialog>
                                                 </td>
                                             </tbody>
                                         <?php

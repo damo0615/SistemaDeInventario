@@ -46,7 +46,7 @@
     <title>Sistema de Inventario</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="../../../../style.css">
+    <link rel="stylesheet" type="text/css" href="../../style.css">
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegaci�n -->
@@ -168,9 +168,18 @@
                             <button onclick="window.mydialog<?php echo $id;?>.showModal()">
                                 <i class="fas fa-edit text-primary-500"></i>
                             </button>
-                            <a href="delete_tag.php?del=<?php echo $id; ?>">
+                            <button onclick="window.mydialog0<?php echo $id;?>.showModal()">
                                 <i class="fas fa-trash-alt text-red-500"></i>
-                            </a>
+                            </button>
+                                <dialog id="mydialog0<?php echo $id; ?>">
+                                    <p>Introduzca la contraseña para eliminar el item</p>
+                                    <form action="delete_tag.php" method="POST">
+                                        <input type="password" name="clave">
+                                        <input type="hidden" name="id" value="<?php echo $prove['id']?>">
+                                        <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
+                                    </form>
+                                    <button onclick='window.mydialog0<?php echo $id; ?>.close();' class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
+                                </dialog>
                         </div>
                     </div>
                 </div>
