@@ -42,7 +42,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="\img\icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
     <div class="relative max-w-md w-full">

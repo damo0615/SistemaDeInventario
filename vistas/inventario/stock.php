@@ -95,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar_movimiento'])
                     }
                     $nueva_cantidad -= $cantidad;
                     $accion = "Se ha registrado una accion de: ".$tipo." por el usuario ".$user_id;
+                    $bitacora = "INSERT INTO bitacora (accion,id_user) VALUES (?,?)";
                     $stmt_bitacora = mysqli_prepare($conn, $bitacora);
                     mysqli_stmt_bind_param($stmt_bitacora, "si", $accion,$user_id);
                     mysqli_stmt_execute($stmt_bitacora);

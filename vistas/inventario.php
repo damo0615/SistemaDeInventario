@@ -18,6 +18,7 @@
     <title>Sistema de Inventario</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegaci�n -->
@@ -172,6 +173,8 @@
                                             $prov = $prod['nombrep'];
                                             $precio = $prod['precio'];
                                             $stock = $prod['cantidad'];
+                                            $id = $prod['cantidad'];
+                                            $descrip = $prod['descripcion'];
                                         ?>  
                                             
                                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -202,15 +205,96 @@
                                                 <?php
                                                     if($_SESSION['rol'] != 3){ ?>
                                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <button class="edit-product text-primary-500 hover:text-primary-600 mr-3" data-id="${product.id}">
-                                                        <i class="fa-solid fa-eye"></i>
+                                                    <button onclick="window.mydialog0<?php echo $id;?>.showModal()">
+                                                        <i class="fa-solid fa-eye text-primary-500 hover:text-primary-600 mr-3"></i>
                                                     </button>
-                                                    <button class="edit-product text-primary-500 hover:text-primary-600 mr-3" data-id="${product.id}">
-                                                        <i class="fas fa-edit"></i>
+                                                    
+                                                    <button onclick="window.mydialog<?php echo $id;?>.showModal()">
+                                                        <i class="fas fa-edit text-primary-500 hover:text-primary-600 mr-3"></i>
                                                     </button>
                                                     <button class="delete-product text-red-500 hover:text-red-600" data-id="${product.id}">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
+    <dialog id="mydialog0<?php echo $id; ?>" class="seedialog">
+        <p>Introduzca la contraseña para eliminar el item</p>
+        <div class="mt-2">
+                        <form action="aggprod.php" method="POST">
+                        <div class="grid grid-cols-6 gap-6">
+                            <div class="col-span-6">
+                                <label for="product-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del Producto</label>
+                                <input type="text" name="product-name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                            </div>
+                            
+                            <div class="col-span-6 sm:col-span-3">
+                                <label for="product-category" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoria</label>
+                                <select id="product-category" name="product-category" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                    <?php
+                                        if($tag->num_rows > 0){
+                                            while($tags = $tag->fetch_assoc()){
+                                                $ntag = $tags['nombres'];
+                                                $itag = $tags['id'];
+                                    ?>
+                                    <option value="<?php echo $itag;?>"><?php  echo $ntag; ?></option>
+                                    <?php  }} ?>
+                                </select>
+                            </div>
+                            
+                            <div class="col-span-6 sm:col-span-3">
+                                <label for="product-codigo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Codigo</label>
+                                <input type="text" name="product-codigo" id="product-codigo" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                            </div>
+                            
+                            <div class="col-span-6 sm:col-span-3">
+                                <label for="product-price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Precio</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">$</span>
+                                    </div>
+                                    <input type="text" name="product-price" id="product-price" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" placeholder="0.00" required>
+                                    
+                                </div>
+                            </div>
+                            
+                            <div class="col-span-6 sm:col-span-3">
+                                <label for="product-prov" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Proveedor</label>
+                                <select id="product-prov" name="product-prov" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                    <?php
+                                        if($prove->num_rows > 0){
+                                            while($provee = $prove->fetch_assoc()){
+                                                $nprove = $provee['nombrep'];
+                                                $iprove = $provee['id'];
+                                    ?>
+                                    <option value="<?php echo $iprove;?>"><?php  echo $nprove; ?></option>
+                                    <?php  }} ?>
+                                </select>
+                            </div>
+                            
+                            <div class="col-span-6">
+                                <label for="product-descrip" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripcion</label>
+                                <textarea id="product-descrip" name="product-descrip" rows="3" class="mt-1 shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" placeholder="Maximo 255 caracteres" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-700">
+                    <input type="submit" name="send" id="save-product" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Guardar Producto">
+                    <a href="../inventario.php">
+                        <button type="button" id="cancel-add" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700">                        Cancelar
+                    </button>
+                    </a>
+                </div>
+                    </form>
+                </div>
+        <button onclick='window.mydialog0<?php echo $id; ?>.close();' class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
+    </dialog>
+    <dialog id="mydialog<?php echo $id; ?>">
+        <p>Introduzca la contraseña para eliminar el item</p>
+        <form action="delete_tag.php" method="POST">
+            <input type="password" name="clave">
+            <input type="hidden" name="id" value="<?php echo $id;?>">
+            <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
+        </form>
+        <button onclick='window.mydialog<?php echo $id; ?>.close();' class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
+    </dialog>
                                                 </td><?php
                                                         }
                                                 ?>
