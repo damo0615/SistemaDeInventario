@@ -7,9 +7,12 @@
         header("location:../../sesion/login.php");
     }
     $query = mysqli_query($conn, "SELECT * FROM proveedor");
-    if (!empty($_SESSION['mensaje'])) {
-        $mensaje = $_SESSION['mensaje'];
-    }
+    if (isset($_POST['limpiar_mensaje'])) {
+    unset($_SESSION['mensaje_exito']);
+    unset($_SESSION['mensaje_error']);
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -20,7 +23,7 @@
     <title>Sistema de Inventario</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet"  type="text/css" href="../../style.css">
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegacion -->
@@ -96,10 +99,17 @@
                                 </a><?php
                                 }
                         ?>
-                        <?php if (isset($mensaje)): ?>
-                            <div class="mensaje <?php echo (strpos($mensaje, 'éxito') !== false) ? 'success' : 'error'; ?>">
-                                <?php echo $mensaje; ?>
-                                <span class="close-btn">&times;</span>
+                        <?php if (isset($_SESSION['mensaje_exito'])): ?>
+                            <div class="message success">
+                                <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
+                                <span class="close-btn" data-form="limpiar_exito">&times;</span>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (isset($_SESSION['mensaje_error'])): ?>
+                            <div class="message error">
+                                <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                                <span class="close-btn" data-form="limpiar_error">&times;</span>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -220,7 +230,22 @@
             const closeBtn = document.querySelector('.close-btn');
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => {
-                    closeBtn.parentNode.style.display = 'none';
+                    // Crea un formulario dinámicamente
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '';
+                    
+                    // Agrega un campo oculto que la lógica de PHP detectará
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'limpiar_mensaje';
+                    input.value = '1';
+                    
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    
+                    // Envía el formulario para limpiar la sesión
+                    form.submit();
                 });
             }
         });

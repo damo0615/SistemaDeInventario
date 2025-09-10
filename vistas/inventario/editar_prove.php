@@ -14,9 +14,10 @@
         $obser = limpiar_cadena($_POST['obser-prov']);
         $query = mysqli_query($conn, "UPDATE proveedor set nombrep='$name', codigop='$codigo', direccion='$dir', observacion='$obser' WHERE id='$id'");
         if(!$query){
-            die("Query Failed");
+            $_SESSION['mensaje_error'] = "Fallo al editar el proveedor";
+            header('location:proveedores.php');
         }
-        $_SESSION['mensaje'] = "Proveedor editado con exito";
+        $_SESSION['mensaje_exito'] = "Proveedor editado con exito";
         header('location:proveedores.php');
     }
 ?>

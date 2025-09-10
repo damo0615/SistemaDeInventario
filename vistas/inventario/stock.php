@@ -17,12 +17,8 @@ if (isset($_POST['limpiar_mensaje'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // ... (tu lógica de procesamiento de stock) ...
 
     try {
-        // ... (tu lógica de transacciones) ...
-
-        // Si la operación es exitosa
         mysqli_commit($conn);
         $_SESSION['mensaje_exito'] = "Operación de stock realizada con éxito.";
 

@@ -10,6 +10,8 @@
     }
     include '../db/db.php';
     $users = mysqli_query($conn, "SELECT COUNT(*) AS total FROM usuario ");
+    $activo = mysqli_query($conn, "SELECT COUNT(*) AS total FROM usuario WHERE estatus=1");
+    $bloqueado = mysqli_query($conn, "SELECT COUNT(*) AS total FROM usuario WHERE estatus=0");
     $username = mysqli_query($conn, "SELECT username FROM usuario WHERE id='$user_id'");
     if(!$users){
         die("Query Failed");
@@ -172,7 +174,10 @@
                                     </dt>
                                     <dd class="flex items-baseline">
                                         <div class="text-2xl font-semibold text-gray-900 dark:text-white">
-                                            72
+                                            <?php
+                                                $act = mysqli_fetch_assoc($activo);
+                                                echo $act['total'];
+                                            ?>
                                         </div>
                                     </dd>
                                 </div>
@@ -193,7 +198,10 @@
                                         </dt>
                                         <dd class="flex items-baseline">
                                             <div class="text-2xl font-semibold text-gray-900 dark:text-white">
-                                                ...
+                                                <?php
+                                                $block = mysqli_fetch_assoc($bloqueado);
+                                                echo $block['total'];
+                                            ?>
                                             </div>
                                         </dd>
                                     </div>
