@@ -139,11 +139,11 @@
                         <div class="grid grid-cols-6 gap-8">
                             <div class="col-span-6">
                                 <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del Usuario</label>
-                                <input type="text" name="name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="25" name="name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
                             <div class="col-span-6">
                                 <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DNI del Usuario</label>
-                                <input type="number" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="number" maxlength="25" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
                             <div class="col-span-6">
                                 <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email del Usuario</label>
@@ -152,7 +152,7 @@
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
-                                <input type="text" name="username" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="25" name="username" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -183,19 +183,19 @@
                             </div>
                             <div class="col-span-5">
                                 <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Pregunta de Seguridad 1:</label>
-                                <input type="text" name="pre1" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="25" name="pre1" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
                             <div class="col-span-5">
                                 <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Respuesta 1:</label>
-                                <input type="text" name="res1"  class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="25" name="res1"  class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
                             <div class="col-span-5">
                                 <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Pregunta de Seguridad 2:</label>
-                                <input type="text" name="pre2" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="25" name="pre2" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
                             <div class="col-span-5">
                                 <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Respuesta 2:</label>
-                                <input type="text" name="res2"  class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="25" name="res2"  class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
                            
                             

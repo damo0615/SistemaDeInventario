@@ -1,4 +1,5 @@
 <?php
+    include '../public/footer.html';
     include '../sesion_time.php';
     session_start();
     $user_id = $_SESSION['id'];
@@ -10,6 +11,8 @@
     $prod = mysqli_query($conn, "SELECT count(*) AS total FROM producto");
     $pre = mysqli_query($conn, "SELECT SUM(precio) AS total FROM producto");
     $tags = mysqli_query($conn, "SELECT count(*) AS total FROM tag");
+
+    
     ?>
 <!DOCTYPE html>
 <html lang="es">

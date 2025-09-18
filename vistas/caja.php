@@ -1,6 +1,7 @@
 <?php
 include '../db/db.php';
 include '../sesion_time.php';
+include '../public/footer.html';
 session_start();
 $user_id = $_SESSION['id'];
 $username = $_SESSION['usern'];
@@ -214,7 +215,7 @@ if (isset($_POST['procesar_venta']) && !empty($_SESSION['lista_venta'])) {
         <form action="caja.php" method="POST">
             <div class="form-group">
                 <label for="codigo_producto">Código del Producto:</label>
-                <input type="text" id="codigo_producto" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" name="codigo_producto" required autofocus list="codigos" autocomplete="off">
+                <input type="text" maxlength="25" id="codigo_producto" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" name="codigo_producto" required autofocus list="codigos" autocomplete="off">
                 <datalist id="codigos">
                     <?php 
                         if($query->num_rows > 0){

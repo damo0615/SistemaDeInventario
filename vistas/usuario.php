@@ -16,6 +16,7 @@
     if(!$users){
         die("Query Failed");
     }
+    include '../public/footer.html'; 
 ?>
 <!DOCTYPE html>
 <html lang="es">

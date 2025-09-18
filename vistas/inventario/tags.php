@@ -1,7 +1,7 @@
 <?php
     include '../../sesion_time.php';
     include '../../db/db.php';
-    include '../    php_inyec.php';
+    include '../php_inyec.php';
     session_start();
     $user_id = $_SESSION['id'];
     if(!isset($user_id)) {
@@ -117,7 +117,7 @@
                         <?php
                             if($_SESSION['rol'] != 3){ ?>
                                 <form action="tags.php" method="POST">
-                            <input type="text" name="name" class="border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-white-500 hover:bg-white-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white-500" required>
+                            <input type="text" maxlength="25" name="name" class="border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-white-500 hover:bg-white-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white-500" required>
                             <input type="submit" name="send" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" value="Agregar">
                         </form><?php
                                 }
@@ -188,7 +188,7 @@
             <dialog id="mydialog<?php echo $id; ?>">
                 <p>Agregue el nuevo nombre de la etiqueta</p>
                 <form action="tags.php" method="POST">
-                    <input type="text" name="name">
+                    <input type="text" maxlength="25" name="name">
                     <input type="hidden" name="id" value="<?php echo $id;?>">
                     <input type="submit" name="update" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
                 </form>

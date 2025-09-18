@@ -121,7 +121,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-solid fa-user text-yellow-500"></i>
                             </div>
-                            <input type="text" id="user" name="user" required 
+                            <input type="text" maxlength="25" id="user" name="user" required 
                                    class="input-effect pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-yellow-400 focus:outline-none transition"
                                    placeholder="Tu nombre de usuario">
                         </div>

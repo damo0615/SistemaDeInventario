@@ -133,7 +133,7 @@
                             </div>
                             <div class="col-span-6">
                                 <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DNI del Usuario</label>
-                                <input type="number" value="<?php echo $fetch_update['dni'] ?>" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="number" maxlength="25" value="<?php echo $fetch_update['dni'] ?>" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
                             <div class="col-span-6">
                                 <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email del Usuario</label>
@@ -142,7 +142,7 @@
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
-                                <input type="text" value="<?php echo $fetch_update['username'] ?>" name="username" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="25" value="<?php echo $fetch_update['username'] ?>" name="username" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>                         
                             
                             

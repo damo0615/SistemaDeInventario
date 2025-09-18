@@ -1,4 +1,5 @@
 <?php
+    
     function limpiar_cadena($cadena){
         $cadena = trim($cadena);
         $cadena = stripslashes($cadena);

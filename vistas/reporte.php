@@ -6,6 +6,7 @@
         header("location:../sesion/login.php");
     }
     include '../db/db.php';
+    include '../public/footer.html';
 
     // --- Resumen de Inventario en Tiempo Real ---
     $stockTotal = 0;

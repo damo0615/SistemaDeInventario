@@ -64,10 +64,10 @@
                     <div>
                         <div class="relative">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Pregunta 1: <?php echo '¿'.$pregunta1.'?';?></label>
-                            <input type="text" id="user" name="res1" required 
+                            <input type="text" maxlength="25" id="user" name="res1" required 
                                    class="input-effect pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-yellow-400 focus:outline-none transition">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Pregunta 2: <?php echo '¿'.$pregunta2.'?';?></label>
-                            <input type="text" id="user" name="res2" required 
+                            <input type="text" maxlength="25" id="user" name="res2" required 
                                    class="input-effect pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-yellow-400 focus:outline-none transition">
                         </div>
                     </div>                                    
