@@ -177,5 +177,8 @@
 
         });
     </script>
+    <?php 
+    include '../public/footer.html';
+?>
 </body>
 </html>

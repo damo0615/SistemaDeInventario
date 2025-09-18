@@ -287,6 +287,10 @@
             </div>
         </div>
     </div>
-    <script src="../js/main.js"></script>
+    <script src="../js/main.js"></script> 
+    <?php 
+    include '../public/footer.html';
+?>
+
 </body>
 </html>
