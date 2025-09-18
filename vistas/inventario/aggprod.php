@@ -146,10 +146,13 @@
                                                 $itag = $tags['id'];
                                     ?>
                                     <option value="<?php echo $itag;?>"><?php  echo $ntag; ?></option>
-                                    <?php  }} ?>
+                                    <?php  }}
+                                    else{
+                                        echo "<script>window.alert('No existen etiquetas o proveedore, antes de agregar un producto, agregue al menos una etiqueta o un proveedor');window.location.href='../inventario.php'</script>";
+                                    } ?>
                                 </select>
+
                             </div>
-                            
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="product-codigo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Codigo</label>
                                 <input type="text" name="product-codigo" id="product-codigo" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
@@ -176,7 +179,9 @@
                                                 $iprove = $provee['id'];
                                     ?>
                                     <option value="<?php echo $iprove;?>"><?php  echo $nprove; ?></option>
-                                    <?php  }} ?>
+                                    <?php  }}else{
+                                        echo "<script>window.alert('No existen etiquetas o proveedore, antes de agregar un producto, agregue al menos una etiqueta o un proveedor');window.location.href='../inventario.php'</script>";
+                                    } ?>
                                 </select>
                             </div>
                             

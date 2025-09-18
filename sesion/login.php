@@ -1,5 +1,6 @@
 <?php
     include '../db/db.php';
+    include '../vistas/php_inyec.php';
     session_start();
     $actual= time();
     $secret_key = "6LeTrpIrAAAAAGelw8Qev0wJ6gzhWTcQCdm3o0W7";
@@ -9,8 +10,8 @@
         $responseData = json_decode($verify);   
         /* if($responseData->success){ */
             if(!empty($_POST['user'])){
-            $user = $_POST['user'];
-            $password = $_POST['password'];
+            $user = limpiar_cadena($_POST['user']);
+            $password = limpiar_cadena($_POST['password']);
             $result = mysqli_query($conn, "SELECT * FROM usuario WHERE username='$user'");
             if($comp = $result->fetch_object()){
                 $name = $comp->username;
@@ -113,7 +114,7 @@
             </div>            
             <!-- Formulario -->
             <div class="px-8 py-8">
-                <form id="loginForm" class="space-y-6" method="POST" action="login.php">
+                <form id="loginForm" class="space-y-6" method="POST" action="login.php" autocomplete="off">
                     <div>
                         <label for="user" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
                         <div class="relative">

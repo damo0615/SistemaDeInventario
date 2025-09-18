@@ -218,10 +218,11 @@
     <dialog id="mydialog0<?php echo $id; ?>" class="seedialog">
         <p>Introduzca la contraseña para eliminar el item</p>
         <div class="mt-2">
-                        <form action="aggprod.php" method="POST">
+                    <form action="aggprod.php" method="POST">
                         <div class="grid grid-cols-6 gap-6">
                             <div class="col-span-6">
                                 <label for="product-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del Producto</label>
+                                <h3></h3>
                                 <input type="text" name="product-name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
                             
@@ -307,6 +308,7 @@
             </table>
         </div>
         </div>
+
         <div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 dark:bg-gray-700 dark:border-gray-700">
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>

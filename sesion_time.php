@@ -15,7 +15,7 @@
         n--;
         if(n == 0){
           window.alert("La sesion fue cerrada por inactividad");
-          window.location.assign("proyecto/Hello/sesion/logout.php"); 
+          window.location.assign("proyecto/hello/sesion/logout.php"); 
         }
       },1200);
     </script>

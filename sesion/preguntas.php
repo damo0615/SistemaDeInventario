@@ -9,7 +9,7 @@
             $pregunta2 = $comp->pregunta2;
             if(isset($_POST['send'])){
                 $respu = mysqli_query($conn, "SELECT id,respuesta1,respuesta2,username,id_permiso FROM usuario WHERE email='$email'");
-                $res1 = $_POST['res1'];
+                $res1 = limpiar_cadena($_POST['res1']);
                 $res2 = $_POST['res2'];
                 if($compe = $respu->fetch_object()){
                     $respu1 = $compe->respuesta1;

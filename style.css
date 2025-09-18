@@ -136,9 +136,24 @@
             fill: #fef9e7;
         }
 dialog{
+    padding: 5%;
+    width: 50%;
+    height: 40%;
+}
+.pop{
     padding: 2%;
-    width: 70%;
-    height: 30%;
+    width: 50%;
+    height: 40%;
+    border: solid #fcb40b 2px;
+    border-radius: 10px;
+    font-size: 15px;
+    z-index: 10;
+}
+.popitems{
+    position: relative;
+    left: 25%;
+    right: -25%;
+    top: 25%;
 }
 
 input{
@@ -153,4 +168,16 @@ textarea{
     height: 20px;
     width: 20px;
     border: 1px solid black;
+}
+.super{
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    left: 25%;
+    right: -25%;
+    top: 25%;
+    bottom: -25%;
+    color: red;
+    background: red;
+    z-index: 10;
 }

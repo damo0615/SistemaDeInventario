@@ -1,4 +1,4 @@
-<?php
+ <?php
     include '..\php_inyec.php';
     include '../../sesion_time.php';
     include '..\..\db\db.php';

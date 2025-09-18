@@ -1,6 +1,7 @@
 <?php
     include '../../sesion_time.php';
     include '../../db/db.php';
+    include '../    php_inyec.php';
     session_start();
     $user_id = $_SESSION['id'];
     if(!isset($user_id)) {
@@ -8,7 +9,7 @@
     }
     $query = mysqli_query($conn, "SELECT nombres,id FROM tag ");
     if(isset($_POST['send'])){
-        $nombre = $_POST['name'];
+        $nombre = limpiar_cadena($_POST['name']);
         $query1 = mysqli_query($conn, "INSERT INTO tag (nombres) VALUES ('$nombre')");
         if(!$query1){
             die("Query Failed");
@@ -175,7 +176,7 @@
                                     <p>Introduzca la contraseña para eliminar el item</p>
                                     <form action="delete_tag.php" method="POST">
                                         <input type="password" name="clave">
-                                        <input type="hidden" name="id" value="<?php echo $prove['id']?>">
+                                        <input type="hidden" name="id" value="<?php echo $tag['id']?>">
                                         <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
                                     </form>
                                     <button onclick='window.mydialog0<?php echo $id; ?>.close();' class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
