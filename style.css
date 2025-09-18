@@ -148,6 +148,7 @@ dialog{
     border-radius: 10px;
     font-size: 15px;
     z-index: 10;
+    float: left;
 }
 .popitems{
     position: relative;
