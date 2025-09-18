@@ -7,7 +7,6 @@
     if(!isset($user_id)) {
         header("location:../../sesion/login.php");
     }
-    $git=2;
     $roles = mysqli_query($conn, "SELECT Nombre,id FROM permisos");
     if(!empty($_POST['send'])){
         $nombre = limpiar_cadena($_POST['name']);
@@ -21,7 +20,7 @@
         $res1 = limpiar_cadena($_POST['res1']);
         $pre2 = limpiar_cadena($_POST['pre2']);
         $res2 = limpiar_cadena($_POST['res2']);
-        $random = range(5, 12);
+        $random = 12;
         $opcion = array("cost"=>$random);        
         if (preg_match("/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$/", $password)){
                 if($c_password == $password){

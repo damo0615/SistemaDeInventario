@@ -8,11 +8,27 @@
     }
     include '../db/db.php';
     $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id INNER JOIN inventario ON inventario.id_producto = producto.id");
+    /*BUSQUEDA DE PRODUCTOS*/
+    if (isset($_POST['buscar'])) {
+        $campo = $_POST['campo'];
+        $busqueda = $_POST['texto'];
+        if ($campo == 'nombre') {
+            $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id INNER JOIN inventario ON inventario.id_producto = producto.id WHERE nombre = '$busqueda'");
+        }if ($campo == 'codigo') {
+            $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id INNER JOIN inventario ON inventario.id_producto = producto.id WHERE codigo = '$busqueda' ");
+        }if ($campo == 'categoria') {
+            $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id INNER JOIN inventario ON inventario.id_producto = producto.id WHERE nombres = '$busqueda' ");
+        }
+        if ($campo == 'Proveedor') {
+            $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id INNER JOIN inventario ON inventario.id_producto = producto.id WHERE nombrep = '$busqueda' ");
+        }
+    }
     include '../public/footer.html';
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -118,7 +134,7 @@
     </div>
     <!-- Tabla de productos -->
     <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700"> 
             <div class="flex-1 min-w-0">
                 <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
                     Inventario de Productos
@@ -131,6 +147,30 @@
                 <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
                     Ultimos productos agregados
                 </p>
+                <table>
+                    <thead>
+                        <th><h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Buscar por:</h3></th>
+                    </thead>
+                    <tbody>
+                        <form method="POST">
+                        <td>
+                            
+                                <select name="campo">
+                                    <option value="nombre">Nombre</option>
+                                    <option value="codigo">Codigo</option>
+                                    <option value="categoria">Categoria</option>
+                                    <option value="Proveedor">Proveedor</option>
+                                </select>
+                        </td>
+                        <td>
+                            <input type="text" name="texto">
+                        </td>
+                        <td>
+                            <input type="submit" name="buscar">
+                        </td>
+                        </form>
+                    </tbody>
+                </table>
             </div>
         </div>
         
@@ -200,7 +240,12 @@
                                                 </td><td class="px-6 py-4 whitespace-nowrap">
                                                     <div class="text-sm text-gray-900 dark:text-white"><?php echo $prov; ?></div>
                                                 </td>
-                                                </td><td class="px-6 py-4 whitespace-nowrap">
+                                                </td><td class="px-6 py-4 whitespace-nowrap bg-<?php if ($stock <= 0) {
+                                                    echo 'red-300';}
+                                                    else if ($stock <= 5) {
+                                                        echo 'orange-300';
+
+                                                }?>">
                                                     <div class="text-sm text-gray-900 dark:text-white"><?php echo $stock; ?></div>
                                                 </td>
                                                 </td>
