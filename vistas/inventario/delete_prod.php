@@ -14,7 +14,7 @@
 				if($comp = $query->fetch_object()){
 					echo "No se puede borrar el producto porque hay registros asociadas a este";
 				}else{
-					$query = mysqli_query($conn,"SELECT * FROM movimiento_inventario WHERE id_inv='$id'");
+					$query = mysqli_query($conn,"SELECT * FROM movimientos_inventario WHERE id_inv='$id'");
 					if($comp = $query->fetch_object()){
 						echo "No se puede borrar el producto porque hay registros asociadas a este";
 					}else{
