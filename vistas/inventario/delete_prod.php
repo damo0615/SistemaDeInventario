@@ -10,11 +10,11 @@
 			$clave  = limpiar_cadena($_POST['clave']);
 			$id = limpiar_cadena($_POST['id']);
 			if (password_verify($clave,$hash)) {
-				$query = mysqli_query($conn,"SELECT * FROM producto WHERE id_tag='$id'");
+				$query = mysqli_query($conn,"SELECT * FROM inventario WHERE id_producto='$id'");
 				if($comp = $query->fetch_object()){
-					echo "No se puede borrar la etiqueta porque hay productos asociadas a esta";
+					echo "No se puede borrar el producto porque hay registros asociadas a este";
 				}else{
-					$borrar = mysqli_query($conn,"DELETE FROM tag WHERE id='$id'");
+					$borrar = mysqli_query($conn,"DELETE FROM producto WHERE id='$id'");
 					if(!$borrar){
 		                die("Query Failed");
 		            }

@@ -19,19 +19,6 @@
         $stockTotal = $datosResumen['total_productos'];
         $valorTotalInventario = $datosResumen['valor_total_inventario'];
     }
-
-    /*// --- Alertas de Stock Bajo ---
-    $alertaStockBajo = [];
-    // Asumimos que has agregado el campo 'inventario_minimo' a la tabla Producto
-    $sqlStockBajo = "SELECT nombre, stock, inventario_minimo FROM Producto WHERE stock <= inventario_minimo";
-    $resultadoStockBajo = $conn->query($sqlStockBajo);
-
-    if ($resultadoStockBajo && $resultadoStockBajo->num_rows > 0) {
-        while ($fila = $resultadoStockBajo->fetch_assoc()) {
-            $alertaStockBajo[] = $fila;
-        }
-    } */
-
     // ---  Análisis de Rotación (Top 5 Productos más comprados) ---
     $topProductosComprados = [];
     $sqlTopComprados = "
@@ -81,21 +68,6 @@
                         </h2>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <a href="reportes/mensual.php">
-                            <button type="button" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                                <i class="fas fa-plus mr-2"></i> Mensual
-                            </button>
-                        </a>
-                        <a href="reportes/semanal.php">
-                            <button type="button" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                                <i class="fas fa-plus mr-2"></i> semanal
-                            </button>
-                        </a>
-                        <a href="reportes/diario.php">
-                            <button type="button" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                                <i class="fas fa-plus mr-2"></i> Diario
-                            </button>
-                        </a>
                         <a href="reportes/Informes.php">
                             <button type="button" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                                 <i class="fas fa-plus mr-2"></i> Informes

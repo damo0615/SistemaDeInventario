@@ -259,32 +259,38 @@
                                                     <button onclick="window.mydialog<?php echo $id;?>.showModal()">
                                                         <i class="fas fa-edit text-primary-500 hover:text-primary-600 mr-3"></i>
                                                     </button>
-                                                    <button class="delete-product text-red-500 hover:text-red-600" data-id="${product.id}">
+                                                    <button onclick="window.mydialogDelete<?php echo $id;?>.showModal()" class="delete-product text-red-500 hover:text-red-600" data-id="${product.id}">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
-    <dialog id="mydialog0<?php echo $id; ?>" class="pop">
-        <p>Detalles de producto</p>
-        <div class="mt-2">
-            <h2><?php echo $codigo; ?></h2>
-            <h2><?php echo $nombre; ?></h2>
-            <h2><?php echo $precio; ?></h2>
-            <h2><?php echo $tag; ?></h2>
-            <h2><?php echo $prov; ?></h2>
-            <h2><?php echo $stock; ?></h2>
-
-        </div>
-        <button onclick='window.mydialog0<?php echo $id; ?>.close();' class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
-    </dialog>
-    <dialog id="mydialog<?php echo $id; ?>">
-        <p>Introduzca la contraseña para eliminar el item</p>
-        <form action="delete_tag.php" method="POST">
-            <input type="password" name="clave">
-            <input type="hidden" name="id" value="<?php echo $id;?>">
-            <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
-        </form>
-        <button onclick='window.mydialog<?php echo $id; ?>.close();' class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
-    </dialog>
-                                                </td><?php
+                                                </td>
+<dialog id="mydialog0<?php echo $id; ?>" class="pop">
+    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Detalles Del Producto:</h3><button onclick='window.mydialog0<?php echo $id; ?>.close();' class="w-full inline-flex float-right justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
+        <h2>Codigo: <?php echo $codigo; ?></h2>
+        <h2>Nomre: <?php echo $nombre; ?></h2>
+        <h2>Precio: <?php echo $precio; ?></h2>
+        <h2>Etiqueta: <?php echo $tag; ?></h2>
+        <h2>Proveedor: <?php echo $prov; ?></h2>
+        <h2>Cantidad en Stock: <?php echo $stock; ?></h2>
+</dialog>
+<dialog id="mydialog<?php echo $id; ?>">
+    <p>Introduzca la contraseña para eliminar el item</p>
+    <form action="delete_tag.php" method="POST">
+        <input type="password" name="clave">
+        <input type="hidden" name="id" value="<?php echo $id;?>">
+        <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
+    </form>
+    <button onclick='window.mydialog<?php echo $id; ?>.close();' class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
+</dialog>                                                
+<dialog id="mydialogDelete<?php echo $id; ?>" class="po+p">
+    <p>Introduzca la contraseña para eliminar el item</p>
+    <form action="inventario/delete_prod.php" method="POST">
+        <input type="password" name="clave">
+        <input type="hidden" name="id" value="<?php echo $id;?>">
+        <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
+    </form>
+    <button onclick='window.mydialogDelete<?php echo $id; ?>.close();' class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
+</dialog>
+    <?php
                                                         }
                                                 ?>
                                             </tbody>
