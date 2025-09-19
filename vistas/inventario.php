@@ -215,7 +215,7 @@
                                             $prov = $prod['nombrep'];
                                             $precio = $prod['precio'];
                                             $stock = $prod['cantidad'];
-                                            $id = $prod['cantidad'];
+                                            $id = $prod['id'];
                                             $descrip = $prod['descripcion'];
                                         ?>  
                                             

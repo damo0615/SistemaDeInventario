@@ -18,13 +18,13 @@
 					if(!$borrar){
 		                die("Query Failed");
 		            }
-		            header('location:tags.php');
+		             header('../location:inventario.php');
 				}
 			}else{
 				echo 'la contraseña esta errada';
 			}
 		}
  	}else{
-			header('location:tags.php');
+			header('location:../inventario.php');
 	}
 ?>
