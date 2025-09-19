@@ -135,6 +135,7 @@
                                             $username = $user['username'];
                                             $email = $user['email'];
                                             $status = $user['estatus'];
+                                            $id = $user['id'];
                                             if($status == 0){
                                                 $iconStatus = 'fas fa-times-circle text-red-500 dark:text-red-300';
                                                 $nameStatus = 'Bloqueado';
@@ -169,7 +170,9 @@
                                                     </span>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <a href="editar_status.php?edit=<?php echo $user['id']?>&status=<?php echo $status;?>" class="edit-product text-primary-500 hover:text-primary-600 mr-3" data-id="${product.id}">
+                                                    <?php 
+                                                    if ($id != $user_id) {
+                                                        ?><a href="editar_status.php?edit=<?php echo $user['id']?>&status=<?php echo $status;?>" class="edit-product text-primary-500 hover:text-primary-600 mr-3" data-id="${product.id}">
                                                         <?php
                                                             if($status == 0){
                                                                 echo '<button class="edit-product text-green-500 hover:text-green-600 mr-3" data-id="${product.id}">
@@ -181,7 +184,9 @@
                                                             </button>'; 
                                                             }
                                                         ?>
-                                                    </a>
+                                                    </a><?php
+                                                    }                                                    
+                                                    ?>
                                                     <a href="editar_user_admin.php?edit=<?php echo $user['id']?>" class="edit-product text-primary-500 hover:text-primary-600 mr-3" data-id="${product.id}">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
