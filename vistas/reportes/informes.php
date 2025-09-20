@@ -19,18 +19,6 @@
         $valorTotalInventario = $datosResumen['valor_total_inventario'];
     }
 
-    // --- Alertas de Stock Bajo ---
-    $alertaStockBajo = [];
-    // Asumimos que has agregado el campo 'inventario_minimo' a la tabla Producto
-    $sqlStockBajo = "SELECT nombre, stock, inventario_minimo FROM Producto WHERE stock <= inventario_minimo";
-    $resultadoStockBajo = $conn->query($sqlStockBajo);
-
-    if ($resultadoStockBajo && $resultadoStockBajo->num_rows > 0) {
-        while ($fila = $resultadoStockBajo->fetch_assoc()) {
-            $alertaStockBajo[] = $fila;
-        }
-    }
-
     // ---  Análisis de Rotación (Top 5 Productos más comprados) ---
     $topProductosComprados = [];
     $sqlTopComprados = "
