@@ -7,12 +7,6 @@
         header("location:../../sesion/login.php");
     }
     $query = mysqli_query($conn, "SELECT * FROM proveedor");
-    if (isset($_POST['limpiar_mensaje'])) {
-    unset($_SESSION['mensaje_exito']);
-    unset($_SESSION['mensaje_error']);
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">

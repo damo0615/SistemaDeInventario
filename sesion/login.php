@@ -3,13 +3,8 @@
     include '../vistas/php_inyec.php';
     session_start();
     $actual= time();
-    $secret_key = "6LeTrpIrAAAAAGelw8Qev0wJ6gzhWTcQCdm3o0W7";
     if(isset($_POST['send'])&& !empty($_POST['send'])){
-    /* if(isset($_POST['captcha-response']) && !empty($_POST['captcha-response'])){ */
-        $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['captcha-response']);
-        $responseData = json_decode($verify);   
-        /* if($responseData->success){ */
-            if(!empty($_POST['user'])){
+        if(!empty($_POST['user'])){
             $user = limpiar_cadena($_POST['user']);
             $password = limpiar_cadena($_POST['password']);
             $result = mysqli_query($conn, "SELECT * FROM usuario WHERE username='$user'");
@@ -29,12 +24,6 @@
                             $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
                             if(!$bitacora){
                                 die("Query Failed");
-                            }
-                            if ($actual < $tiempo){
-                                    $contador = ceil(($tiempo - $actual) / 60);
-                                    echo "<script>
-                                    alert('Has agotado tus 3 intentos, intentalo de nuevo en $contador minutos');
-                                    </script>";
                             }else{
                                 header("location:../vistas/dashboard.php");
                             }
@@ -45,36 +34,26 @@
                                 $_SESSION['intento']++;
                             }
                             if($_SESSION['intento'] >= 3){
-                                if (!isset($_SESSION['tiempo']) || $_SESSION['tiempo'] == 0) {
-                                    $_SESSION['tiempo'] = time() + (1 * 60);
-                                }
-                                $actual = time();
-                                $tiempo = $_SESSION['tiempo'];
-
-                                if ($actual < $tiempo) {
-                                    $contador = ceil(($tiempo - $actual) / 60);
-                                    echo "<script>
-                                    alert('Has agotado tus 3 intentos, intentalo de nuevo en $contador minutos');
-                                    </script>";
-                                } else {
-                                    $_SESSION['intento'] = 0;
-                                    $_SESSION['tiempo'] = 0;
+                                $_SESSION['mensaje_error'] = "Ha alcanzado el limite de intentos, recupere su contraseña o comuniquese con un admin";
+                                $save = $intento = 3-$_SESSION['intento'];
+                                $query = mysqli_query($conn, "UPDATE usuario SET estatus=0 WHERE username='$name'");
+                                if(!$query){
+                                    die("Query Failed UPDATE");
                                 }
                             }else{
                                 $intento = 3-$_SESSION['intento'];
-                                echo '<script>window.alert("Contraseña errada te quedan '.$intento.' intentos")</script>';
+                                $_SESSION['mensaje_error'] = "Contraseña errada te quedan ".$intento." intentos";
                             }
                         }
                     }else{
-                        echo '<script>window.alert("El usuario esta bloqueado, contacte con un administrador")</script>';
+                        $_SESSION['mensaje_error'] = "El usuario esta bloqueado, contacte con un administrador";
                     }
                 }
             }else{ 
-                echo '<script>window.alert("Usuario no encontrado")</script>';
-            }
-      /*   } */
+                $_SESSION['mensaje_error'] = "Usuario no encontrado";            }
+    
     }
-       /*  } */
+
         
     }
 ?>
@@ -87,7 +66,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="\img\icon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
         var onloadCallback = function(){
@@ -113,6 +92,19 @@
                 <p class="text-yellow-100 mt-1">Inicia sesión para continuar</p>
             </div>            
             <!-- Formulario -->
+            <?php if (isset($_SESSION['mensaje_exito'])): ?>
+                <div class="message success">
+                    <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
+                    <span class="close-btn" data-form="limpiar_exito">&times;</span>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['mensaje_error'])): ?>
+                <div class="message error">
+                    <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                    <span class="close-btn" data-form="limpiar_error">&times;</span>
+                </div>
+            <?php endif; ?>
             <div class="px-8 py-8">
                 <form id="loginForm" class="space-y-6" method="POST" action="login.php" autocomplete="off">
                     <div>
@@ -175,6 +167,17 @@
           const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
           passwordInput.setAttribute('type', type);
 
+        });
+         document.addEventListener('DOMContentLoaded', () => {
+            const closeBtn = document.querySelector('.close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    <?php 
+                        unset($_SESSION['mensaje_exito']);
+                        unset($_SESSION['mensaje_error']);
+                    ?>
+                });
+            }
         });
     </script>
     <?php 
