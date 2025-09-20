@@ -45,7 +45,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegaci�n -->
-    <?php include '../../public/navbarD.php'; ?>
+    <?php include '../../public/navbarU.php'; ?>
     <!-- Contenido principal -->
     <div class="pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
