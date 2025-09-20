@@ -7,7 +7,7 @@
         header("location:../../sesion/login.php");
     }
     $user = $_SESSION['usern'];
-    $result = mysqli_query($conn, "SELECT * FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id INNER JOIN bitacora ON usuario.id = bitacora.id_user WHERE username='$user' AND bitacora.accion = 'El usuario $user ha iniciado sesion' ORDER BY bitacora.fecha_accion DESC");
+    $result = mysqli_query($conn, "SELECT * FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id INNER JOIN bitacora ON usuario.id = bitacora.id_user WHERE username='$user' ORDER BY bitacora.fecha_accion DESC");
     if($comp = $result->fetch_object()){
                 $name = $comp->username;
                 $c_name = $comp->nombres;

@@ -2,7 +2,10 @@
     include '../vistas/php_inyec.php';
     include '../sesion_time.php';
     include '..\db\db.php';
+    session_start();
     $user_id = $_SESSION['id'];
+    $rol = $_SESSION['rol'];
+    echo $rol;
     if(!isset($user_id)) {
         header("location:../sesion/login.php");
     }

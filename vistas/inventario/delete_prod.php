@@ -22,7 +22,7 @@
 						if(!$borrar){
 			                die("Query Failed");
 			            }
-			             header('../location:inventario.php');
+			             header('location:../inventario.php');
 					}
 				}
 			}else{

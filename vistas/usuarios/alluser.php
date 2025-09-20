@@ -1,12 +1,36 @@
 <?php
     include '../../sesion_time.php';
     include '../../db/db.php';
+    include '..\php_inyec.php';
     session_start();
     $user_id = $_SESSION['id'];
+    $rol = $_SESSION['rol'];
+    $vista=0;
     if(!isset($user_id)) {
         header("location:../../sesion/login.php");
     }
+    if ($rol >= 3) {
+        header("location:viewuser.php");
+    }
     $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id");
+    if (isset($_POST['buscar'])) {
+        $campo = limpiar_cadena($_POST['campo']);
+        $busqueda = limpiar_cadena($_POST['texto']);
+        if (empty($busqueda)) {
+            if ($campo == 'nombre') {
+            $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id WHERE nombres='$busqueda'");
+            }if ($campo == 'DNI') {
+                $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id WHERE DNI='$busqueda'");
+            }if ($campo == 'username') {
+                $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id WHERE username='$busqueda'");
+            }
+            if ($campo == 'email') {
+                $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id WHERE email='$busqueda'");
+            }else{
+                $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id");
+            }
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -21,63 +45,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegaci�n -->
-    <nav class="bg-white dark:bg-gray-800 shadow-md fixed w-full z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <i class="fas fa-boxes text-primary-500 text-2xl mr-2"></i>
-                        <span class="text-xl font-bold text-gray-900 dark:text-white">Inventory Pro</span>
-                    </div>
-                    <div class="hidden md:ml-6 md:flex md:space-x-8">
-                        <a href="../dashboard.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Dashboard
-                        </a>
-                        <a href="../caja.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Caja
-                        </a>
-                        <a href="../dashboard.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Inventario
-                        </a>
-                        <a href="../reporte.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Reportes
-                        </a>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <button id="mobile-menu-button" type="button" class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5 mr-1">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <div class="ml-3 relative">
-                        <div>
-                            <a href="../usuario.php">
-                                <button type="button" class="bg-white dark:bg-gray-800 rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                                <span class="sr-only">Open user menu</span>
-                                <div class="h-8 w-8 rounded-full bg-primary-500 flex items-center justify-center text-white font-bold">AD</div>
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        
-        <!-- Men� m�vil -->
-        <div class="md:hidden hidden" id="mobile-menu">
-            <div class="pt-2 pb-3 space-y-1">
-                <a href="../dashboard.php" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
-                    Dashboard
-                </a>
-                <a href="../inventario.php" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
-                    Inventario
-                </a>
-                <a href="../reporte.php" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
-                    Reportes
-                </a>
-            </div>
-        </div>
-    </nav>
+    <?php include '../../public/navbarD.php'; ?>
     <!-- Contenido principal -->
     <div class="pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -88,8 +56,34 @@
                         <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
                             Todos los Usuarios
                         </h2>
+                        <button type="button" onclick="window.mydialog.showModal()" id="add-product-btn" class="ml-3 float-right inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            <i class="fas fa-x mr-2"></i> Cerrar Sesion
+                        </button>
                     </div>
                 </div>
+                <table>
+                    <thead>
+                        <th><h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Buscar por:</h3></th>
+                    </thead>
+                    <tbody>
+                        <form method="POST">
+                            <td>
+                                <select name="campo" id="">
+                                    <option value="nombre">Nombre</option>
+                                    <option value="username">Usuario</option>
+                                    <option value="DNI">DNI</option>
+                                    <option value="email">Email</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" name="texto">
+                            </td>
+                            <td>
+                                <input type="submit" name="buscar">
+                            </td>  
+                        </form>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -212,6 +206,14 @@
                         </table>
                     </div>
                 </div>
+    <dialog id="mydialog" class="pop">
+        <div class="popitems">
+            <h1>¿Seguro que quiere cerrar sesion?</h1>
+            <br>
+            <button onclick='window.location.href = "../../sesion/logout.php";' class="rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:text-sm">Si, cerrar</button>
+            <button onclick='window.mydialog.close();' class="rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:text-sm">Cancel</button>
+            </div>
+    </dialog>
     <script src="../../js/main.js"></script>
 </body>
 </html>

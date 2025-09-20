@@ -1,5 +1,6 @@
 <?php
     include '../db/db.php';
+    include '../vistas/php_inyec.php';
     session_start();
     if(!empty($_SESSION['email'])){
         $email = $_SESSION['email'];
