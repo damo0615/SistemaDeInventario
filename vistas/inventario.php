@@ -23,6 +23,12 @@
             $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id INNER JOIN inventario ON inventario.id_producto = producto.id WHERE nombrep = '$busqueda' ");
         }
     }
+    if (isset($_POST['limpiar_mensaje'])) {
+        unset($_SESSION['mensaje_exito']);
+        unset($_SESSION['mensaje_error']);
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
     include '../public/footer.html';
 ?>
 <!DOCTYPE html>
@@ -39,7 +45,6 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegaci�n -->
-    <?php include '../public/navbar.php'; ?>
     <?php include '../public/navbar.php'; ?>
     <!-- Contenido principal -->
     <div class="pt-16 pb-8">
@@ -86,6 +91,19 @@
                         </button>
                     </a>
                 </h3>
+                <?php if (isset($_SESSION['mensaje_exito'])): ?>
+                            <div class="message success">
+                                <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
+                                <span class="close-btn" data-form="limpiar_exito">&times;</span>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (isset($_SESSION['mensaje_error'])): ?>
+                            <div class="message error">
+                                <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                                <span class="close-btn" data-form="limpiar_error">&times;</span>
+                            </div>
+                        <?php endif; ?>
                 <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
                     Ultimos productos agregados
                 </p>
@@ -215,11 +233,11 @@
         <h2>Cantidad en Stock: <?php echo $stock; ?></h2>
 </dialog>
 <dialog id="mydialog<?php echo $id; ?>">
-    <p>Introduzca la contraseña para eliminar el item</p>
-    <form action="delete_tag.php" method="POST">
+    <p>Introduzca la contraseña para editar el item</p>
+    <form action="inventario/editar_prod.php" method="POST">
         <input type="password" name="clave">
         <input type="hidden" name="id" value="<?php echo $id;?>">
-        <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
+        <input type="submit" name="editar" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
     </form>
     <button onclick='window.mydialog<?php echo $id; ?>.close();' class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm">Cerrar modal</button>
 </dialog>                                                
@@ -252,6 +270,20 @@
             </div>
         </div>
     </div>
-    <script src="../js/main.js"></script>
+    <script src="../js/main.js">
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeBtn = document.querySelector('.close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    <?php 
+                        unset($_SESSION['mensaje_exito']);
+                        unset($_SESSION['mensaje_error']);
+                    ?>
+                });
+            }
+        });
+    </script>
+    </script>
 </body>
 </html>

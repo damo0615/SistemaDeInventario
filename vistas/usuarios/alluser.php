@@ -91,10 +91,10 @@
                 <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
                     <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
                         <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                            Inventario de Productos
+                            Todos los usuarios que hacen vida en el sistema
                         </h3>
                         <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                            Ultimos productos agregados
+                            verifica el estado de cada uno y gestiona sus acciones
                         </p>
                     </div>
                     <div class="overflow-x-auto">

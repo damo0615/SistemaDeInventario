@@ -231,22 +231,10 @@
             const closeBtn = document.querySelector('.close-btn');
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => {
-                    // Crea un formulario dinámicamente
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '';
-                    
-                    // Agrega un campo oculto que la lógica de PHP detectará
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'limpiar_mensaje';
-                    input.value = '1';
-                    
-                    form.appendChild(input);
-                    document.body.appendChild(form);
-                    
-                    // Envía el formulario para limpiar la sesión
-                    form.submit();
+                    <?php 
+                        unset($_SESSION['mensaje_exito']);
+                        unset($_SESSION['mensaje_error']);
+                    ?>
                 });
             }
         });
