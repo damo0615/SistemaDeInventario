@@ -20,7 +20,7 @@
 			        	die("Query Failed");
 			        }else{
 			        	$_SESSION['mensaje'] = "Proveedor eliminado con exito";
-			        	header('location:/proveedores.php');
+			        	header('location:proveedores.php');
 			        }
 				}else{
 					$_SESSION['mensaje'] = "Proveedor con productos registrados, verifique antes de eliminar";
