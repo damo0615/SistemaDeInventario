@@ -1,240 +1,463 @@
 <?php
-include '../db/db.php';
-include '../sesion_time.php';
-include '../public/footer.html';
-session_start();
-$user_id = $_SESSION['id'];
-$username = $_SESSION['usern'];
-if(!isset($user_id)) {
-    header("location:../sesion/login.php");
-}
-
-
-$query = mysqli_query($conn,"SELECT codigo FROM producto");
-
-// Inicializar la lista de productos de la venta en la sesión si no existe
-if (!isset($_SESSION['lista_venta'])) {
-    $_SESSION['lista_venta'] = [];
-}
-
-// Lógica para agregar un producto a la lista
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_producto'])) {
-    $codigo_producto = $conn->real_escape_string($_POST['codigo_producto']);
-    
-    // NOTA: Es buena práctica usar consultas preparadas para evitar inyección SQL
-    $sql = "SELECT id, nombre, precio, codigo FROM producto WHERE codigo = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $codigo_producto);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-
-    if ($resultado->num_rows > 0) {
-        $producto = $resultado->fetch_assoc();  
-        
-        $existe_en_lista = false;
-        foreach ($_SESSION['lista_venta'] as & $item) {
-            if ($item['id'] === $producto['id']) {
-                $item['cantidad']++;
-                $existe_en_lista = true;
-                break;
-            }
-        }
-        unset($item);
-        
-        if (!$existe_en_lista) {
-            $producto['cantidad'] = 1;
-            $_SESSION['lista_venta'][] = $producto;
-        }
-    } else {
-        $mensaje = "Producto con código '$codigo_producto' no encontrado.";
+    include '../sesion_time.php';
+    include '../vistas/php_inyec.php';
+    session_start();
+    $user_id = $_SESSION['id'];
+    $user_n = $_SESSION['usern'];
+    if(!isset($user_id)) {
+        header("location:../sesion/login.php");
     }
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_producto'])) {
-    $id_producto_eliminar = (int)$_POST['id_producto_eliminar'];
-    
-    $_SESSION['lista_venta'] = array_filter($_SESSION['lista_venta'], function($item) use ($id_producto_eliminar) {
-        return $item['id'] !== $id_producto_eliminar;
-    });
-    $_SESSION['lista_venta'] = array_values($_SESSION['lista_venta']);
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['vaciar_lista'])) {
-    $_SESSION['lista_venta'] = [];
-}
-
-// Lógica para procesar la venta
-if (isset($_POST['procesar_venta']) && !empty($_SESSION['lista_venta'])) {
-    $conn->begin_transaction();
-    $total_venta = 0;
-    foreach ($_SESSION['lista_venta'] as $item) {
-        $total_venta += $item['precio'] * $item['cantidad'];
+    include '../db/db.php';
+    include '../public/footer.html';
+    $cliente = "";
+    if (!empty($_POST['buscar'])) {
+        $busqueda = $_POST['busqueda'];
+        $campo = $_POST['campo'];
+        if ($campo == 'nombre') {
+            $query = mysqli_query($conn, "SELECT * FROM clientes WHERE nombrec = '$busqueda'");
+            $cliente = "buscar";
+        }else if ($campo == 'codigo') {
+            $query = mysqli_query($conn, "SELECT * FROM clientes WHERE codigo = '$busqueda'");
+            $cliente = "buscar";
+        }
+    }
+    if (!empty($_POST['confirmar'])){
+        $codigo = $_POST['codigo'];
+        echo $codigo;
+        $query_cliente = mysqli_query($conn,"SELECT * FROM clientes WHERE codigo = '$codigo'");
+        if(!$query_cliente){
+            die("Query Failed");
+        }
+        $cliente = "confirmado";
+    }
+    if (!empty($_POST['send'])) {
+        $nombre = $_POST['name'];
+        $codigo = $_POST['codigo'];
+        $dni = $_POST['dni'];
+        $telefono = $_POST['telefono'];
+        $query = mysqli_query($conn, "INSERT INTO clientes (nombrec,dni,codigo,telefono) VALUES ('$nombre','$dni','$codigo','$telefono')");
+        if(!$query){
+            die("Query Failed");
+        }
+        $cliente = "confirmado";
+        $query_cliente = mysqli_query($conn,"SELECT * FROM clientes WHERE codigo = '$codigo'");
+        if(!$query_cliente){
+            die("Query Failed");
+        }
     }
 
-    $sql_venta = "INSERT INTO compra (id_user, fecha, total) VALUES (?, NOW(), ?)";
-    $stmt_venta = $conn->prepare($sql_venta);
-    $stmt_venta->bind_param("id",$_SESSION['id'],$total_venta);
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar_movimiento'])) {
+    $lista_productos = json_decode($_POST['lista_productos'], true);
 
-    if ($stmt_venta->execute()) {
-        $id_venta = $conn->insert_id;
-        $todo_ok = true;
+    echo $lista_productos;
 
-        foreach ($_SESSION['lista_venta'] as $item) {
-            $id_producto = $item['id'];
-            $cantidad = $item['cantidad'];
-            $precio_unitario = $item['precio'];
+    // Iniciar la transacción para asegurar la consistencia de los datos
+    mysqli_begin_transaction($conn);
+    $todo_ok = true;
+    $mensaje_error = '';
 
-            $sql_detalle = "INSERT INTO detalles_compra (id_compra, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
-            $stmt_detalle = $conn->prepare($sql_detalle);
-            $stmt_detalle->bind_param("iiid", $id_venta, $id_producto, $cantidad, $precio_unitario);
-            if (!$stmt_detalle->execute()) {
+    if (!is_array($lista_productos) || empty($lista_productos)) {
+        $todo_ok = false;
+        $mensaje_error = "No hay productos en la lista para procesar.";
+    }
+
+    if ($todo_ok) {
+        foreach ($lista_productos as $producto) {
+            $id_producto = $producto['id'];
+            $cantidad = (int)$producto['cantidad'];
+
+            if ($cantidad <= 0) {
                 $todo_ok = false;
+                $mensaje_error = "La cantidad para el producto " . $producto['nombre'] . " debe ser un número positivo.";
                 break;
             }
 
-            $sql_stock = "UPDATE producto SET stock = stock - ? WHERE id = ?";
-            $stmt_stock = $conn->prepare($sql_stock);
-            $stmt_stock->bind_param("ii", $cantidad, $id_producto);
-            if (!$stmt_stock->execute()) {
+            try {
+                // Obtener el ID del inventario y la cantidad actual del producto
+                $sql_inventario = "SELECT id, cantidad FROM inventario WHERE id_producto = ?";
+                $stmt_inventario = mysqli_prepare($conn, $sql_inventario);
+                mysqli_stmt_bind_param($stmt_inventario, "i", $id_producto);
+                mysqli_stmt_execute($stmt_inventario);
+                $result = mysqli_stmt_get_result($stmt_inventario);
+                
+                if (mysqli_num_rows($result) === 0) {
+                    throw new Exception("Producto con ID '" . $id_producto . "' no encontrado en el inventario.");
+                }
+                $row = mysqli_fetch_assoc($result);
+                $id_inventario = $row['id'];
+                $cantidad_actual = $row['cantidad'];
+        
+                // Calcular la nueva cantidad según el tipo de movimiento
+                $nueva_cantidad = $cantidad_actual;
+                if ($cantidad_actual < $cantidad) {
+                    throw new Exception("Stock insuficiente para " . $producto['nombre'] . ". Disponible: $cantidad_actual");
+                }
+                $nueva_cantidad -= $cantidad;
+                $accion = "Se ha registrado un movimiento por el usuario ".$user_id;
+                $bitacora = "INSERT INTO bitacora (accion,id_user) VALUES (?,?)";
+                $stmt_bitacora = mysqli_prepare($conn, $bitacora);
+                mysqli_stmt_bind_param($stmt_bitacora, "si", $accion,$user_id);
+                mysqli_stmt_execute($stmt_bitacora);
+                if (!mysqli_stmt_execute($stmt_bitacora)) {
+                    throw new Exception("Error al registrar el movimiento en la bitacora");
+                }
+                
+                // Actualizar la cantidad en la tabla 'Inventario'
+                $sql_update = "UPDATE inventario SET cantidad = ? WHERE id = ?";
+                $stmt_update = mysqli_prepare($conn, $sql_update);
+                mysqli_stmt_bind_param($stmt_update, "ii", $nueva_cantidad, $id_inventario);
+                if (!mysqli_stmt_execute($stmt_update)) {
+                    throw new Exception("Error al actualizar el inventario para el producto " . $producto['nombre'] . ".");
+                }
+
+                // Registrar el movimiento en la tabla 'movimiento_inventario'
+                $sql_movimiento = "INSERT INTO (id_inv, tipo, cantidad, fecha, cantidad_actual) VALUES (?, ?, ?, NOW(), ?)";
+                $stmt_movimiento = mysqli_prepare($conn, $sql_movimiento);
+                mysqli_stmt_bind_param($stmt_movimiento, "isii", $id_inventario, $tipo_movimiento, $cantidad, $nueva_cantidad);
+                if (!mysqli_stmt_execute($stmt_movimiento)) {
+                    throw new Exception("Error al registrar el movimiento para el producto " . $producto['nombre'] . ".");
+                }
+
+            } catch (Exception $e) {
                 $todo_ok = false;
-                break;
+                $mensaje_error = $e->getMessage();
+                break; // Detener el bucle si hay un error
             }
-        }
+        } // Fin del bucle foreach
 
         if ($todo_ok) {
-            $conn->commit();
-            $_SESSION['lista_venta'] = [];
-            $mensaje = "Venta procesada con éxito.";
-            $accion = "El usuario ".$username." ha registrado un despacho";
-            $bitacora = "INSERT INTO bitacora (accion,id_user) VALUES (?,?)";
-            $stmt_bitacora = mysqli_prepare($conn, $bitacora);
-            mysqli_stmt_bind_param($stmt_bitacora, "si", $accion,$user_id);
-            if (!mysqli_stmt_execute($stmt_bitacora)) {
-                throw new Exception("Error al registrar el movimiento en la bitacora");
-            }
-                     
+            mysqli_commit($conn);
+            $mensaje_exito = "Todas las operaciones de stock realizadas con éxito.";
         } else {
-            $conn->rollback();
-            $mensaje = "Error al procesar la venta. La transacción ha sido revertida.";
+            mysqli_rollback($conn);
         }
-    } else {
-        $conn->rollback();
-        $mensaje = "Error al crear la venta.";
     }
 }
-?>
 
+    // Obtener la lista de productos para el autocompletado y búsqueda
+    $productos_json = "[]";
+    $query_productos = mysqli_query($conn, "SELECT id, nombre, codigo, precio FROM producto");
+    if (mysqli_num_rows($query_productos) > 0) {
+        $productos_data = [];
+        while ($row = mysqli_fetch_assoc($query_productos)) {
+            $productos_data[] = $row;
+        }
+        $productos_json = json_encode($productos_data);
+    }
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Punto de Venta</title>
+    <title>Sistema de Inventario</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="../style.css">
-    
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegaci�n -->
-    <?php include '../public/navbarC.php'; ?>
+    <?php include '../public/navbarR.php'; ?>
+    <!-- Contenido principal -->
     <div class="pt-16 pb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="px-4 py-6 sm:px-0">
-    <!-- Header -->
-    <div class="md:flex md:items-center md:justify-between mb-6">
-    <div class="flex-1 min-w-0">
-        <h1 class="text- 2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">Punto de Venta</h1>
-        <?php if (isset($mensaje)): ?>
-            <div class="mensaje <?php echo (strpos($mensaje, 'éxito') !== false) ? 'success' : 'error'; ?>">
-                <?php echo $mensaje; ?>
-                <span class="close-btn">&times;</span>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="px-4 py-6 sm:px-0">
+                <!-- Header -->
+                <div class="md:flex md:items-center md:justify-between mb-6">
+                    <div class="flex-1 min-w-0">
+                        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
+                            Movimientos
+                        </h2>
+                    </div>
+                </div>
             </div>
-        <?php endif; ?>
-
-        <form action="caja.php" method="POST">
-            <div class="form-group">
-                <label for="codigo_producto">Código del Producto:</label>
-                <input type="text" maxlength="25" id="codigo_producto" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" name="codigo_producto" required autofocus list="codigos" autocomplete="off">
-                <datalist id="codigos">
-                    <?php 
-                        if($query->num_rows > 0){
-                            while($prod = $query->fetch_assoc()){
-                                $codigo = $prod['codigo'];
-                    ?>
-                        <option value="<?php echo $codigo;?>"></option>
-                    <?php
-                            }
-                        }
-                    ?>
-                </datalist>
-            </div>
-            <button type="submit" name="agregar_producto" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Agregar a la Venta</button>
-        </form>
-   </div>
+        </div>
     </div>
-        <hr>
+    <!-- Tabla de productos -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6" >
+        <?php if (isset($_SESSION['mensaje_exito'])): ?>
+                            <div class="message success">
+                                <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
+                                <span class="close-btn" data-form="limpiar_exito">&times;</span>
+                            </div>
+                        <?php endif; ?>
 
-        <h2>Productos en la Venta</h2>
-        <div class="lista-productos bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
+                        <?php if (isset($_SESSION['mensaje_error'])): ?>
+                            <div class="message error">
+                                <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                                <span class="close-btn" data-form="limpiar_error">&times;</span>
+                            </div>
+                        <?php endif; ?>
+        <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
             <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
-            <ul>
-                <?php
-                $total_venta = 0;
-                foreach ($_SESSION['lista_venta'] as $item):
-                    $subtotal = $item['precio'] * $item['cantidad'];
-                    $total_venta += $subtotal;
-                ?>
-                    <li>
-                        <span>
-                            <?php echo htmlspecialchars($item['nombre']); ?> (<?php echo htmlspecialchars($item['codigo']); ?>)
-                            - Cantidad: <?php echo htmlspecialchars($item['cantidad']); ?> x $<?php echo number_format($item['precio'], 2); ?>
-                        </span>
-                        <span>
-                            $<?php echo number_format($subtotal, 2); ?>
-                            <form action="caja.php" method="POST" style="display:inline-block; margin-left: 10px;">
-                                <input type="hidden" name="id_producto_eliminar" value="<?php echo $item['id']; ?>">
-                                <button type="submit" name="eliminar_producto" class="eliminar-btn">X</button>
-                            </form>
-                        </span>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-            <div class="total">
-                Total: $<?php echo number_format($total_venta, 2); ?>
+                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                    INVERSIONES MERCAMIX MV
+                </h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">Usuario: <?php echo $user_n; ?></p>
+                <?php if ($cliente == "confirmado") {
+                        if ($query_cliente -> num_rows > 0) {
+                            while($cli = $query_cliente->fetch_assoc()){
+                                $nombre = $cli['nombrec']; ?>
+                                <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">Cliente: <?php echo $nombre; ?></p>
+                                <form id="add-form">
+                                    <div class="grid grid-cols-6 gap-8">
+                                        <div class="col-span-6 sm:col-span-3">
+                                            <input type="text" maxlength="25" id="codigo_producto" placeholder="Código de Producto" list="codigos" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                        </div>
+                                        <div class="col-span-6 sm:col-span-1">
+                                            <input type="number" max="200" maxlength="3" id="cantidad_producto" placeholder="Cantidad" min="1" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                        </div>
+                                        <div class="col-span-6 sm:col-span-1">
+                                            <button type="submit" id="add-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Agregar</button>
+                                            <datalist id="codigos">
+                                            </datalist>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form id="main-form" method="POST">
+                                    <div class="lista-productos bg-white shadow shadow-primary-200 overflow-hidden rounded-lg dark:bg-gray-800">
+                                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                            <thead class="bg-gray-50 dark:bg-gray-700">
+                                                <tr>
+                                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                                        nombre
+                                                    </th>
+                                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                                        codigo
+                                                    </th>
+                                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                                        precio
+                                                    </th>
+                                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                                        cantidad
+                                                    </th>
+                                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                                        total
+                                                    </th>
+                                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700 custom-scrollbar" id="product-list">
+                                                
+                                            </tbody>
+                                        </table>
+                                        <ul  class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                        </ul>
+                                    </div>
+                                    
+                                    <input type="hidden" name="lista_productos" id="lista_productos">
+                                    <button type="submit" name="procesar_movimiento" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" disabled>Procesar Movimiento</button>
+                                </form>
+                                
+                                <?php
+                            }
+                        } 
+                    ?>
+            </div>
+            <div class="overflow-x-auto">
             </div>
         </div>
-        </div>
-
-        <?php if (!empty($_SESSION['lista_venta'])): ?>
-            <div class="action-buttons">
-                <form action="caja.php" method="POST">
-                    <button type="button" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-400 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" name="vaciar_lista">Vaciar Lista</button>
-                </form>
-                <form action="caja.php" method="POST">
-                    <button type="submit" name="procesar_venta" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Procesar Venta</button>
-                </form>
+    </div>
+    <!-- Dialog de clientes -->
+    <?php }elseif ($cliente == "") { ?>
+        <form method="POST">
+            <div class="grid grid-cols-6 gap-8 super">
+                <div class="col-span-6">
+                    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
+                        Busque un cliente para proceder:
+                    </h2>
+                </div>
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Buscar Por:</label>
+                    <select id="product-category" name="campo" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                        <option value="nombre">Nombre</option>
+                        <option value="codigo">Codigo</option>
+                    </select>
+                </div>
+                <div class="col-span-6 sm:col-span-3">
+                    <label for="user-name" class="block text-sm font-medium text-white-700 dark:text-white-300">.</label>
+                    <input type="text" maxlength="25" name="busqueda" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                </div>
+                <div class="col-span-6 sm:col-span-3">
+                    <input type="submit" id="save-product" name="buscar" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Buscar Usuario"></input>
+                </div>
             </div>
-        <?php endif; ?>
-    </div>
-    </div>
-    </div>
-    </div>
-</body>
-<script type="text/javascript" src="../js/main.js"></script>
-<script>
+        </form>
+    <?php 
+        }elseif($cliente == "buscar"){ 
+            if ($query -> num_rows > 0) {
+                while($cli = $query->fetch_assoc()){ 
+                    $nombre = $cli['nombrec'];
+                    $dni = $cli['dni'];
+                    $codigo = $cli['codigo'];
+                    $telefono = $cli['telefono'];
+                    ?>
+                    <form action="caja2.php" method="POST">
+                        <div class="grid grid-cols-6 gap-8 super">
+                            <div class="col-span-6">
+                                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
+                                    Confirmar
+                                </h2>
+                            </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del Cliente</label>
+                                    <input type="text" maxlength="25" name="name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $nombre;?>" required >
+                                </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DNI</label>
+                                    <input type="text" maxlength="25" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $dni;?>" required >
+                                </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="codigo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Codigo</label>
+                                    <input type="text" maxlength="25" name="codigo" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $codigo;?>" required >
+                                </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="telefono" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefono</label>
+                                    <input type="text" maxlength="25" name="telefono" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $telefono;?>" required >
+                                </div>
+                                <div class="col-span-6 sm:col-span-2">
+                                    <input type="submit" id="save-product" name="confirmar" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="confirmar"></input>
+                                </div>
+                            </div>
+                    </form>
+                    <?php
+                }
+            }else{ ?>
+                <form method="POST">
+                    <div class="grid grid-cols-6 gap-8 super">
+                        <div class="col-span-6">
+                            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
+                                No existe un cliente con los datos que buscas, puedes registrarlo:
+                            </h2>
+                        </div>
+                        <div class="col-span-6 sm:col-span-3">
+                            <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
+                            <input type="text" maxlength="25" name="name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required value="<?php echo $busqueda;?>">
+                        </div>
+                        <div class="col-span-6 sm:col-span-3">
+                            <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DNI</label>
+                            <input type="text" maxlength="25" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required >
+                        </div>
+                        <div class="col-span-6 sm:col-span-3">
+                            <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Codigo</label>
+                            <input type="text" maxlength="25" name="codigo" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required >
+                        </div>
+                        <div class="col-span-6 sm:col-span-3">
+                            <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefono</label>
+                            <input type="text" maxlength="25" name="telefono" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required >
+                        </div>
+                        <div class="col-span-6 sm:col-span-2">
+                            <input type="submit" id="save-product" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Guardar Usuario"></input>
+                        </div>
+                    </div>
+                </form>
+           <?php }
+        }
+        ?>
+                
+    <script src="../js/main.js"></script>
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const closeBtn = document.querySelector('.close-btn');
+            const productosData = <?php echo $productos_json; ?>;
+            const datalist = document.getElementById('codigos');
+            const listaProductosUl = document.getElementById('product-list');
+            const addForm = document.getElementById('add-form');
+            const codigoInput = document.getElementById('codigo_producto');
+            const cantidadInput = document.getElementById('cantidad_producto');
+            const mainForm = document.getElementById('main-form');
+            const listaProductosInput = document.getElementById('lista_productos');
+            const closeBtn = document.querySelector('.close-btn-mensaje');
+            
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => {
-                    closeBtn.parentNode.style.display = 'none';
+                    <?php 
+                        unset($_SESSION['mensaje_exito']);
+                        unset($_SESSION['mensaje_error']);
+                    ?>
                 });
             }
-        });
-</script>
-</html>
+            let productosEnLista = [];
 
-<?php
-$conn->close();
-?>
+            // Llenar el datalist
+            productosData.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.codigo;
+                datalist.appendChild(option);
+            });
+
+            addForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const codigo = codigoInput.value;
+                const cantidad = parseInt(cantidadInput.value);
+
+                if (isNaN(cantidad) || cantidad <= 0) {
+                    alert('La cantidad debe ser un número positivo.');
+                    return;
+                }
+
+                const productoEncontrado = productosData.find(p => p.codigo === codigo);
+
+                if (productoEncontrado) {
+                    const yaExiste = productosEnLista.find(p => p.id === productoEncontrado.id);
+                    if (yaExiste) {
+                        alert('Este producto ya está en la lista. Por favor, elimínelo y agréguelo de nuevo si desea cambiar la cantidad.');
+                    } else {
+                        productosEnLista.push({
+                            id: productoEncontrado.id,
+                            nombre: productoEncontrado.nombre,
+                            codigo: productoEncontrado.codigo,
+                            precio: productoEncontrado.precio,
+                            cantidad: cantidad
+                        });
+                        actualizarListaVisual();
+                        codigoInput.value = '';
+                        cantidadInput.value = '';
+                    }
+                } else {
+                    alert('Producto no encontrado.');
+                }
+            });
+
+            function actualizarListaVisual() {
+                listaProductosUl.innerHTML = '';
+                productosEnLista.forEach((p, index) => {
+                    const li = document.createElement('tr');
+                    let total = p.precio * p.cantidad;
+                    li.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">${p.nombre}</div>                            
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">${p.codigo}</div>                            
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">${p.precio}</div>                            
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">${p.cantidad}</div>                            
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-white">${total}</div>                            
+                        </td>
+                        <button type="button" class="remove-item-btn" data-index="${index}">&times;</button>
+                    `;
+                    listaProductosUl.appendChild(li);
+                });
+            }
+
+            listaProductosUl.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-item-btn')) {
+                    const index = e.target.getAttribute('data-index');
+                    productosEnLista.splice(index, 1);
+                    actualizarListaVisual();
+                }
+            });
+
+            mainForm.addEventListener('submit', () => {
+                listaProductosInput.value = JSON.stringify(productosEnLista);
+            });
+        });
+    </script>
+</body>  
+</html>

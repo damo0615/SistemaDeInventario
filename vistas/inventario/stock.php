@@ -108,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar_movimiento'])
                 if (!mysqli_stmt_execute($stmt_update)) {
                     throw new Exception("Error al actualizar el inventario para el producto " . $producto['nombre'] . ".");
                 }
-        
+
                 // Registrar el movimiento en la tabla 'movimiento_inventario'
                 $sql_movimiento = "INSERT INTO movimientos_inventario (id_inv, tipo, cantidad, fecha, cantidad_actual) VALUES (?, ?, ?, NOW(), ?)";
                 $stmt_movimiento = mysqli_prepare($conn, $sql_movimiento);
@@ -188,7 +188,7 @@ $conn->close();
                             <input type="number" max="200" maxlength="3" id="cantidad_producto" placeholder="Cantidad" min="1" class="mt-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             <button type="submit" id="add-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Agregar</button>
                             <datalist id="codigos">
-                                </datalist>
+                            </datalist>
                         </form>
                     </div>
                 </div>
