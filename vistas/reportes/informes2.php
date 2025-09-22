@@ -6,7 +6,7 @@
         header("location:../sesion/login.php");
     }
     include '../../db/db.php';
-    $query = mysqli_query($conn, "SELECT compra.id,compra.fecha,compra.total,usuario.username,clientes.nombrec,clientes.codigo FROM compra INNER JOIN usuario ON compra.id_user = usuario.id INNER JOIN clientes ON compra.id_cliente = clientes.id");
+    $query = mysqli_query($conn, "SELECT compra.* FROM compra INNER JOIN clientes ON clientes.id = compra.id_cliente");
 ?>
 
 <!DOCTYPE html>
@@ -87,13 +87,12 @@
                 <tbody id="inventory-table-body" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700 custom-scrollbar">
                     <?php
                         if($query->num_rows > 0){
+                            $m = 0;
                             while($prod = $query->fetch_assoc()){
                                 $id = $prod['id'];
                                 $fecha = $prod['fecha'];
-                                $accion = $prod['total'];
-                                $user = $prod['username'];
-                                $cliente = $prod['nombrec'];
-                                $codigo = $prod['codigo'];
+
+                                $m ++;
                             ?>  
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
@@ -106,37 +105,10 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $cliente; ?></div>
+                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $id; ?></div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $codigo; ?></div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $accion; ?></div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $user; ?></div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">180,00</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">Entregado</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">Cerrada</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">
-                                    <form action="detalles.php" method="POST">
-                                        <div class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                                            <i class="fas fa-plus mr-2"></i>
-                                            <input type="submit" name="ver" value="VER DETALLES">
-                                            <input type="hidden" name="id" value="<?php echo $id; ?>">
-                                            
-                                        </div>
-                                    </form>
-                                </div>
+                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $m; ?></div>
                             </td>
                             </tbody>
                                         <?php
