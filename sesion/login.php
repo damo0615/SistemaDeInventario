@@ -8,7 +8,8 @@
     if(isset($_POST['send'])&& !empty($_POST['send'])){
         $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
         if (!verificarRecaptcha($recaptchaResponse)) {
-        header('Location: login.php?error=recaptcha_fallido&username=' . urlencode($username));
+            $_SESSION['mensaje_error'] = 'Por favor, verifique que no es un robot';
+         header('Location: login.php');
         exit;
         }
         if(!empty($_POST['user'])){
@@ -90,42 +91,14 @@
                 <h1 class="text-2xl font-bold text-white">Bienvenido de nuevo</h1>
                 <p class="text-yellow-100 mt-1">Inicia sesión para continuar</p>
             </div>     
-            <?php if (isset($_GET['error'])): ?>
+            <?php if (isset($_SESSION['mensaje_error'])): ?>
                 <div class="error-message">
-                    <?php
-                    switch ($_GET['error']) {
-                        case 'campos_vacios':
-                            echo 'Por favor, complete todos los campos.';
-                            break;
-                        case 'credenciales_incorrectas':
-                            echo 'Usuario o contraseña incorrectos.';
-                            break;
-                        case 'recaptcha_fallido':
-                            echo 'Por favor, verifica que no eres un robot.';
-                            break;
-                        case 'sesion_expirada':
-                            echo 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.';
-                            break;
-                        default:
-                            echo 'Error al iniciar sesión.';
-                    }
-                    ?>
+                    <div class="message error">
+                        <?php echo $_SESSION['mensaje_error'];?>
+                    </div>                    
                 </div>
             <?php endif; ?>       
             <!-- Formulario -->
-            <?php if (isset($_SESSION['mensaje_exito'])): ?>
-                <div class="message success">
-                    <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
-                    <span class="close-btn" data-form="limpiar_exito">&times;</span>
-                </div>
-            <?php endif; ?>
-
-            <?php if (isset($_SESSION['mensaje_error'])): ?>
-                <div class="message error">
-                    <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
-                    <span class="close-btn" data-form="limpiar_error">&times;</span>
-                </div>
-            <?php endif; ?>
             <div class="px-8 py-8">
                 <form id="loginForm" class="space-y-6" method="POST" action="login.php" autocomplete="off">
                     <div>
@@ -177,18 +150,25 @@
     <script>
         const passwordInput = document.getElementById('password');
         const toggleButton = document.getElementById('togglePassword');
+        const closeBtn = document.getElementById('closeBtn');
+
+        closeBtn.addEventListener('click',function(){
+            <?php 
+                        unset($_SESSION['mensaje_error']);
+                    ?>
+        });
 
         toggleButton.addEventListener('click', function() {
           const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
           passwordInput.setAttribute('type', type);
 
         });
-         document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const closeBtn = document.querySelector('.close-btn');
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => {
                     <?php 
-                        unset($_SESSION['mensaje_exito']);
+                        unset($_GET['error']);
                         unset($_SESSION['mensaje_error']);
                     ?>
                 });
