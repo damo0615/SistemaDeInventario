@@ -43,7 +43,7 @@
                       </li>
                     </ul>
                     <div class="py-1">
-                        <a href="\Proyecto\Hello\vistas\inventario\stock.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Cerrar Sesion</a>
+                        <a href="\Proyecto\Hello\sesion\logout.php" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Cerrar Sesion</a>
                     </div>
         
       </div>
@@ -70,13 +70,13 @@
             <div id="dropdownNavbar1" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
                     <li>
-                        <a href="\Proyecto\Hello\vistas\reportes.php" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Resumen</a>
+                        <a href="\Proyecto\Hello\reportes.php" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Resumen</a>
                     </li>
                     <li>
-                        <a href="\Proyecto\Hello\vistas\reportes.php" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Movimientos de Cuentas</a>
+                        <a href="\Proyecto\Hello\vistas\reportes\informes.php" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Movimientos de Cuentas</a>
                     </li>
                     <li>
-                        <a href="\Proyecto\Hello\vistas\reportes\proveedores.php" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Movimientos de Stock</a>
+                        <a href="\Proyecto\Hello\vistas\reportes\informes_stock.php" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Movimientos de Stock</a>
                     </li>
                 </ul>
                 <?php 
