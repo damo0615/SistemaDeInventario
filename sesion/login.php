@@ -1,5 +1,6 @@
 <?php
     include '../db/db.php';
+    include '../db/config.php';
     include '../vistas/php_inyec.php';
     session_start();
     $actual= time();
@@ -140,14 +141,8 @@
                             </a>
                         </div>
                     </div>
-                    <div class="form-item">
-                        <!-- Google reCAPTCHA widget -->
-                        <div class="g-recaptcha"
-                            data-sitekey="6LeTrpIrAAAAACOTi5VGoTUpkTV-U02ny8VUZxT8"
-                            data-badge="inline"
-                            data-size="invisible"
-                            data-callback="setResponse">
-                        </div>
+                    <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"></div>
                     </div>
                     <div>
                         <input type="submit" 
