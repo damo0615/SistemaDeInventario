@@ -26,7 +26,7 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegaci�n -->
-    <?php include '../public/navbar2.php'; ?>
+    <?php include '../public/navbar.php'; ?>
 
     <!-- Contenido principal -->
     <div class="pt-16 pb-8">
