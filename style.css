@@ -180,6 +180,9 @@ textarea{
     top: 25%;
     bottom: -25%;
     background: rgba(255, 255, 255, .5) ;
-    z-index: 10;
+    z-index: 2;
     border: solid rgba(100, 50, 100, 1.0) 1px;
+}
+.barra {
+    z-index: 10;
 }

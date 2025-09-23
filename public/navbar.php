@@ -1,4 +1,5 @@
-<nav class="bg-white border-gray-200 fixed w-full z-10 dark:bg-gray-900 shadow-md">
+<link rel="stylesheet" href="../style.css">
+<nav class="bg-white border-gray-200 fixed w-full z-10 dark:bg-gray-900 shadow-md barra">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
   <div class="flex-shrink-0 flex items-center">
                         <i class="fas fa-boxes text-primary-500 text-2xl mr-2"></i>
