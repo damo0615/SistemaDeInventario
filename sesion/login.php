@@ -4,7 +4,13 @@
     include '../vistas/php_inyec.php';
     session_start();
     $actual= time();
+
     if(isset($_POST['send'])&& !empty($_POST['send'])){
+        $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+        if (!verificarRecaptcha($recaptchaResponse)) {
+        header('Location: login.php?error=recaptcha_fallido&username=' . urlencode($username));
+        exit;
+        }
         if(!empty($_POST['user'])){
             $user = limpiar_cadena($_POST['user']);
             $password = limpiar_cadena($_POST['password']);
@@ -69,14 +75,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script>
-        var onloadCallback = function(){
-            grecaptcha.execute();
-        };
-        function setResponse(response) {
-            document.getElementById("captcha-response").value = response;
-        };
-    </script>
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
     <div class="relative max-w-md w-full">
@@ -91,7 +89,29 @@
                 </div>
                 <h1 class="text-2xl font-bold text-white">Bienvenido de nuevo</h1>
                 <p class="text-yellow-100 mt-1">Inicia sesión para continuar</p>
-            </div>            
+            </div>     
+            <?php if (isset($_GET['error'])): ?>
+                <div class="error-message">
+                    <?php
+                    switch ($_GET['error']) {
+                        case 'campos_vacios':
+                            echo 'Por favor, complete todos los campos.';
+                            break;
+                        case 'credenciales_incorrectas':
+                            echo 'Usuario o contraseña incorrectos.';
+                            break;
+                        case 'recaptcha_fallido':
+                            echo 'Por favor, verifica que no eres un robot.';
+                            break;
+                        case 'sesion_expirada':
+                            echo 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.';
+                            break;
+                        default:
+                            echo 'Error al iniciar sesión.';
+                    }
+                    ?>
+                </div>
+            <?php endif; ?>       
             <!-- Formulario -->
             <?php if (isset($_SESSION['mensaje_exito'])): ?>
                 <div class="message success">
@@ -142,7 +162,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"></div>
+                        <div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"></div>
                     </div>
                     <div>
                         <input type="submit" 
