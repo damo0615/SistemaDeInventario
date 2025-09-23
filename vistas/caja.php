@@ -169,12 +169,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Inventario</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegaci�n -->
-    <?php include '../public/navbarR.php'; ?>
+    <?php include '../public/navbar.php'; ?>
     <!-- Contenido principal -->
     <div class="pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -479,4 +481,5 @@
         });
     </script>
 </body>  
+<?php include '../public/footer.html'; ?>
 </html>
