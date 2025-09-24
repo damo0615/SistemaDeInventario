@@ -6,7 +6,7 @@
         header("location:../sesion/login.php");
     }
     include '../../db/db.php';
-    $query = mysqli_query($conn, "SELECT m.id,m.id_inv,m.cantidad,m.fecha,i.id_producto,p.nombre FROM movimientos_inventario m INNER JOIN inventario i ON m.id_inv = i.id INNER JOIN producto p ON i.id_producto = p.id");
+    $query = mysqli_query($conn, "SELECT m.id,m.id_inv,m.cantidad,m.cantidad_actual,m.fecha,i.id_producto,p.nombre,p.codigo FROM movimientos_inventario m INNER JOIN inventario i ON m.id_inv = i.id INNER JOIN producto p ON i.id_producto = p.id ORDER BY p.nombre");
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +30,7 @@
                 <div class="md:flex md:items-center md:justify-between mb-6">
                     <div class="flex-1 min-w-0">
                         <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
-                            Movimiento de Ventas
+                            Movimiento de Inventario
                         </h2>
                         <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
                             Acciones realizadas
@@ -59,41 +59,32 @@
                             fecha
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            cliente
+                            producto
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            codigo cliente
+                            codigo producto
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            total
+                            tipo
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            usuario
+                            cantidad
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            Tasa
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            Estado
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            Cuentas
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            
+                            Cantidad actual
                         </th>
                     </tr>
                 </thead>
                 <tbody id="inventory-table-body" class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700 custom-scrollbar">
                     <?php
                         if($query->num_rows > 0){
-                            while($prod = $query->fetch_assoc()){
-                                $id = $prod['id'];
-                                $fecha = $prod['fecha'];
-                                $accion = $prod['total'];
-                                $user = $prod['username'];
-                                $cliente = $prod['nombrec'];
-                                $codigo = $prod['codigo'];
+                            while($re = $query->fetch_assoc()){
+                                $fecha = $re['fecha'];
+                                $producto = $re['nombre'];
+                                $codigo = $re['codigo'];
+                                $cantidad = $re['cantidad'];
+                                $cantidad_ac = $re['cantidad_actual'];
+                                
                             ?>  
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
@@ -106,37 +97,19 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $cliente; ?></div>
+                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $producto; ?></div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900 dark:text-white"><?php echo $codigo; ?></div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $accion; ?></div>
+                                <div class="text-sm text-gray-900 dark:text-white">C-V-D</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $user; ?></div>
+                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $cantidad; ?></div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">180,00</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">Entregado</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">Cerrada</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">
-                                    <form action="detalles.php" method="POST">
-                                        <div class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                                            <i class="fas fa-plus mr-2"></i>
-                                            <input type="submit" name="ver" value="VER DETALLES">
-                                            <input type="hidden" name="id" value="<?php echo $id; ?>">
-                                            
-                                        </div>
-                                    </form>
-                                </div>
+                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $cantidad_ac; ?></div>
                             </td>
                             </tbody>
                                         <?php
