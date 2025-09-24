@@ -273,7 +273,7 @@
                                 </h3>
                             </div>
                             <div class="mt-2">
-                                <form action="aggprod.php" method="POST">
+                                <form action="inventario/aggprod.php" method="POST">
                                     <div class="grid grid-cols-6 gap-6">
                                         <div class="col-span-6">
                                             <label for="product-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del Producto</label>
@@ -334,8 +334,7 @@
                                         <button onclick='window.mydialogAgregarP.close();' type="button" id="cancel-add" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700">Cancelar </button>
                                     </div>
                                 </form>
-                            </div>
-            
+                            </div>    
         </dialog>
 </div>
     <script src="../js/main.js">
@@ -357,6 +356,108 @@
                         unset($_SESSION['mensaje_exito']);
                         unset($_SESSION['mensaje_error']);
                     ?>
+                });
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const productosData = <?php echo $productos_json; ?>;
+            const datalist = document.getElementById('codigos');
+            const listaProductosUl = document.getElementById('product-list');
+            const addForm = document.getElementById('add-form');
+            const codigoInput = document.getElementById('codigo_producto');
+            const cantidadInput = document.getElementById('cantidad_producto');
+            const mainForm = document.getElementById('main-form');
+            const listaProductosInput = document.getElementById('lista_productos');
+            let productosEnLista = [];
+
+            // Llenar el datalist
+            productosData.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.codigo;
+                datalist.appendChild(option);
+            });
+
+            addForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const codigo = codigoInput.value;
+                const cantidad = parseInt(cantidadInput.value);
+
+                if (isNaN(cantidad) || cantidad <= 0) {
+                    alert('La cantidad debe ser un número positivo.');
+                    return;
+                }
+
+                const productoEncontrado = productosData.find(p => p.codigo === codigo);
+
+                if (productoEncontrado) {
+                    const yaExiste = productosEnLista.find(p => p.id === productoEncontrado.id);
+                    if (yaExiste) {
+                        alert('Este producto ya está en la lista. Por favor, elimínelo y agréguelo de nuevo si desea cambiar la cantidad.');
+                    } else {
+                        productosEnLista.push({
+                            id: productoEncontrado.id,
+                            nombre: productoEncontrado.nombre,
+                            codigo: productoEncontrado.codigo,
+                            cantidad: cantidad
+                        });
+                        actualizarListaVisual();
+                        codigoInput.value = '';
+                        cantidadInput.value = '';
+                    }
+                } else {
+                    alert('Producto no encontrado.');
+                }
+            });
+
+            function actualizarListaVisual() {
+                listaProductosUl.innerHTML = '';
+                productosEnLista.forEach((p, index) => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span>${p.nombre} (${p.codigo}) - Cantidad: ${p.cantidad}</span>
+                        <button type="button" class="remove-item-btn" data-index="${index}">&times;</button>
+                    `;
+                    listaProductosUl.appendChild(li);
+                });
+            }
+
+            listaProductosUl.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-item-btn')) {
+                    const index = e.target.getAttribute('data-index');
+                    productosEnLista.splice(index, 1);
+                    actualizarListaVisual();
+                }
+            });
+
+            mainForm.addEventListener('submit', () => {
+                listaProductosInput.value = JSON.stringify(productosEnLista);
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeBtn = document.querySelector('.close-btn');
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    // Crea un formulario dinámicamente
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '';
+                    
+                    // Agrega un campo oculto que la lógica de PHP detectará
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'limpiar_mensaje';
+                    input.value = '1';
+                    
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    
+                    // Envía el formulario para limpiar la sesión
+                    form.submit();
                 });
             }
         });

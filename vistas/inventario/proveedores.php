@@ -170,7 +170,7 @@
                         </h3>
                     </div>
                     <div class="mt-2">
-                        <form action="aggprov.php" method="POST">
+                        <form action="inventario/aggprov.php" method="POST">
                         <div class="grid grid-cols-6 gap-6">
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="product-price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
