@@ -29,7 +29,7 @@
                             if(!$bitacora){
                                 die("Query Failed");
                             }
-                            header('location:../usuario.php');
+                            header('location:viewuser.php');
                     }else{
                         echo "<script>window.alert('Usuario o Correo ya registrado, Intente de nuevo')</script>";
                     }
