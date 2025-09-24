@@ -15,7 +15,8 @@
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     }
-    include '../public/footer.html';
+    // FUNCIONES PARA STOCK
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -500,5 +501,4 @@
         });
     </script>
 </body>
-<?php include '../public/footer.html'; ?>
 </html>

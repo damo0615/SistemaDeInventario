@@ -35,7 +35,7 @@
             <div id="reportesDropdown" class="hidden absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-10">
               <a href="\Proyecto\Hello\vistas\reporte.php" class="block px-4 py-2 hover:bg-yellow-100">Resumen</a>
               <a href="\Proyecto\Hello\vistas\reportes\informes.php" class="block px-4 py-2 hover:bg-yellow-100">Ventas</a>
-              <a href="#" class="block px-4 py-2 hover:bg-yellow-100">Movimientos Stock</a>
+              <a href="\Proyecto\Hello\vistas\reportes\informes_stock.php" class="block px-4 py-2 hover:bg-yellow-100">Movimientos Stock</a>
               <a href="\Proyecto\Hello\vistas\reportes\bitacora.php" class="block px-4 py-2 hover:bg-yellow-100">Bitacora</a>
             </div>
           </div>

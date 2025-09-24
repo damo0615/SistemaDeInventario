@@ -138,5 +138,4 @@
     </div>
 <script src="../../js/main.js"></script>
 </body>
-<?php include '../../public/footer.html'; ?>
 </html>
