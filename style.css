@@ -186,3 +186,14 @@ textarea{
 .barra {
     z-index: 10;
 }
+.confirmar{
+    width: 30%;
+    height: 30%;
+    padding: 3%;
+    border: solid yellow 1px;
+    border-radius: 10px;
+}
+.confirmar p{
+    text-align: center;
+    margin-bottom: 8%;
+}

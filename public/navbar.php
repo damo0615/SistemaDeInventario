@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="../style.css">
 <body class="bg-gray-100">
   <nav class="bg-white text-yellow-600 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,13 +55,20 @@
             </div>
             <a href="\Proyecto\Hello\vistas\usuarios\alluser.php" class="block px-4 py-2 hover:bg-yellow-100">Ver todos los usuarios</a>
             <a href="\Proyecto\Hello\vistas\usuarios\viewuser.php" class="block px-4 py-2 hover:bg-yellow-100">Mi perfil</a>
-            <a href="\Proyecto\Hello\sesión\logout.php" class="block px-4 py-2 hover:bg-yellow-100 text-red-600">Cerrar sesión</a>
+            <button onclick="window.confirmar.showModal();" class="block px-4 py-2 hover:bg-yellow-100 text-red-600">Cerrar sesión</button>
           </div>
         </div>
 
       </div>
     </div>
   </nav>
+<dialog id="confirmar" class="confirmar">
+  <div class=" md:items-center md:justify-between mb-6">
+    <p>Seguro que quiere cerrar sesion?</p>
+    <button onclick='window.confirmar.close();' class="ml-3 float-right inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">No</button>
+    <a href="\Proyecto\Hello\sesion\logout.php"><button class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Si</button></a>
+  </div>
+</dialog>
 
   <!-- Script para toggle -->
   <script>
