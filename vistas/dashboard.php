@@ -1,5 +1,4 @@
 <?php
-    include '../public/footer.html';
     include '../sesion_time.php';
     session_start();
     $user_id = $_SESSION['id'];

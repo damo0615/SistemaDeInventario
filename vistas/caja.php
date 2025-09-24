@@ -8,7 +8,6 @@
         header("location:../sesion/login.php");
     }
     include '../db/db.php';
-    include '../public/footer.html';
     $cliente = "";
     if (!empty($_POST['buscar'])) {
         $busqueda = $_POST['busqueda'];

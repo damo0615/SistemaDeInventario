@@ -70,9 +70,11 @@
             <div class="flex-1 min-w-0">
                 <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
                     Inventario de Productos
-                        <button onclick="window.stock.showModal()" type="button" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 float-right">
-                            <i class="fas fa-plus mr-2"></i> Gestion de Stock
-                        </button>
+                        <a href="inventario/stock.php">
+                            <button onclick="window.stock.showModal()" type="button" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 float-right">
+                                <i class="fas fa-plus mr-2"></i> Gestion de Stock
+                            </button>
+                        </a>
                 </h3>
                 <?php if (isset($_SESSION['mensaje_exito'])): ?>
                             <div class="message success">

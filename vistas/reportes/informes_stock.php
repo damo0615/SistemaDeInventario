@@ -6,7 +6,7 @@
         header("location:../sesion/login.php");
     }
     include '../../db/db.php';
-    $query = mysqli_query($conn, "SELECT compra.id,compra.fecha,compra.total,usuario.username,clientes.nombrec,clientes.codigo FROM compra INNER JOIN usuario ON compra.id_user = usuario.id INNER JOIN clientes ON compra.id_cliente = clientes.id");
+    $query = mysqli_query($conn, "SELECT m.id,m.id_inv,m.cantidad,m.fecha,i.id_producto,p.nombre FROM movimientos_inventario m INNER JOIN inventario i ON m.id_inv = i.id INNER JOIN producto p ON i.id_producto = p.id");
 ?>
 
 <!DOCTYPE html>
