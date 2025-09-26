@@ -6,7 +6,7 @@
         header("location:../sesion/login.php");
     }
     include '../../db/db.php';
-    $query = mysqli_query($conn, "SELECT m.id,m.id_inv,m.cantidad,m.cantidad_actual,m.fecha,i.id_producto,p.nombre,p.codigo FROM movimientos_inventario m INNER JOIN inventario i ON m.id_inv = i.id INNER JOIN producto p ON i.id_producto = p.id ORDER BY p.nombre");
+    $query = mysqli_query($conn, "SELECT m.id,m.tipo,m.id_inv,m.cantidad,m.cantidad_actual,m.fecha,i.id_producto,p.nombre,p.codigo FROM movimientos_inventario m INNER JOIN inventario i ON m.id_inv = i.id INNER JOIN producto p ON i.id_producto = p.id ORDER BY p.nombre");
 ?>
 
 <!DOCTYPE html>
@@ -84,6 +84,14 @@
                                 $codigo = $re['codigo'];
                                 $cantidad = $re['cantidad'];
                                 $cantidad_ac = $re['cantidad_actual'];
+                                $tipo = $re['tipo'];
+                                if ($tipo == 'C') {
+                                    $tipo = "Carga";
+                                }elseif ($tipo == 'D') {
+                                    $tipo = "Descarga";
+                                }elseif ($tipo == 'V') {
+                                    $tipo = "Venta";
+                                }
                                 
                             ?>  
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -103,7 +111,7 @@
                                 <div class="text-sm text-gray-900 dark:text-white"><?php echo $codigo; ?></div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">C-V-D</div>
+                                <div class="text-sm text-gray-900 dark:text-white"><?php echo $tipo; ?></div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900 dark:text-white"><?php echo $cantidad; ?></div>

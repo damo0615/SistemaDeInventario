@@ -6,7 +6,7 @@
         header("location:../sesion/login.php");
     }
     include '../../db/db.php';
-    $query = mysqli_query($conn, "SELECT compra.id,compra.fecha,compra.total,usuario.username,clientes.nombrec,clientes.codigo FROM compra INNER JOIN usuario ON compra.id_user = usuario.id INNER JOIN clientes ON compra.id_cliente = clientes.id");
+    $query = mysqli_query($conn, "SELECT compra.id,compra.fecha,compra.total,usuario.username,clientes.nombrec,clientes.codigo FROM compra INNER JOIN usuario ON compra.id_user = usuario.id INNER JOIN clientes ON compra.id_cliente = clientes.id ORDER BY fecha DESC");
 ?>
 
 <!DOCTYPE html>
@@ -23,9 +23,9 @@
     <!-- Barra de navegaci�n -->
     <?php include '../../public/navbar.php'; ?>
     <!-- Contenido principal -->
-    <div class="pt-16 pb-8">
+    <div class="pt-4 pb-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="px-4 py-6 sm:px-0">
+            <div class="px-2 py-3 sm:px-0">
                 <!-- Header -->
                 <div class="md:flex md:items-center md:justify-between mb-6">
                     <div class="flex-1 min-w-0">
@@ -71,15 +71,6 @@
                             usuario
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            Tasa
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            Estado
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
-                            Cuentas
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
                             
                         </th>
                     </tr>
@@ -97,9 +88,6 @@
                             ?>  
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center dark:bg-primary-200">
-                                        <i class="fas fa-box text-primary-600"></i>
-                                    </div>
                                     <div class="ml-4">
                                         <div class="text-sm font-medium text-gray-900 dark:text-white"><?php echo $fecha; ?></div>
                                     </div>
@@ -116,15 +104,6 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900 dark:text-white"><?php echo $user; ?></div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">180,00</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">Entregado</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900 dark:text-white">Cerrada</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900 dark:text-white">

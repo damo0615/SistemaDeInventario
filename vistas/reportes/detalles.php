@@ -8,7 +8,7 @@
     }
     $item  = $_POST['id'];
     $query = mysqli_query($conn, "SELECT * FROM compra INNER JOIN usuario  ON compra.id_user = usuario.id INNER JOIN clientes ON compra.id_cliente = clientes.id WHERE compra.id = '$item'");
-    $query2 = mysqli_query($conn, "SELECT * FROM detalles_compra INNER JOIN compra ON detalles_compra.id_compra = compra.id INNER JOIN producto ON detalles_compra.id_producto = producto.id  WHERE detalles_compra.id = '$item'");
+    $query2 = mysqli_query($conn, "SELECT * FROM detalles_compra INNER JOIN compra ON detalles_compra.id_compra = compra.id INNER JOIN producto ON detalles_compra.id_producto = producto.id  WHERE compra.id = '$item'");
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -24,18 +24,30 @@
     <!-- Barra de navegaci�n -->
     <?php include '../../public/navbar.php'; ?>
     <!-- Contenido principal -->
-    <div class="pt-16 pb-8">
+    <div class="pt-4 pb-1">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="px-4 py-6 sm:px-0">
                 <!-- Header -->
                 <div class="md:flex md:items-center md:justify-between mb-6">
                     <div class="flex-1 min-w-0">
-                    	<h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
-                            Movimiento de Ventas
-                        </h2>
-                        <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-                            Acciones realizadas
-                        </p>
+                    	<?php
+                if($query->num_rows > 0){
+                    while($prod = $query->fetch_assoc()){
+                        $fecha = $prod['fecha'];
+                        $cliente = $prod['nombrec'];
+                        $total = $prod['total'];
+                    ?>
+                    <h3 class="flex-2 text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                        INVERSIONES MERCAMIX MV
+                    </h3>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
+                        Cliente: <?php echo $cliente; ?>
+                    </p>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
+                        Fecha: <?php echo $fecha; ?>
+                    </p>
+
+                    <?php } } ?> 
                     </div>
                 </div>
             </div>
@@ -45,24 +57,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6" >
     <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
     	<div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
-    		<?php
-		        if($query->num_rows > 0){
-		            while($prod = $query->fetch_assoc()){
-	                    $fecha = $prod['fecha'];
-	                    $cliente = $prod['nombrec'];
-	                    $total = $prod['total'];
-		            ?>
-		            <h3 class="flex-2 text-lg leading-6 font-medium text-gray-900 dark:text-white">
-						INVERSIONES MERCAMIX MV>
-		            </h3>
-		            <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-		            	Cliente: <?php echo $cliente; ?>
-		            </p>
-		            <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-		            	Fecha: <?php echo $fecha; ?>
-		            </p>
-
-		            <?php } } ?>           
+    	          
         </div>
         <div class="overflow-x-auto">
         	<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -91,25 +86,27 @@
 	                    $precio = $prod['precio_unitario'];
 	                    $total = $prod['total'];
             ?>	
-            	<td class="px-6 py-4 whitespace-nowrap">
-            		<div class="flex items-center">
-                        <div class="flex-shrink-0 h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center dark:bg-primary-200">
-                            <i class="fas fa-box text-primary-600"></i>
+            	<tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center dark:bg-primary-200">
+                                <i class="fas fa-box text-primary-600"></i>
+                            </div>
+                            <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900 dark:text-white"><?php echo $producto; ?></div>
                         </div>
-                        <div class="ml-4">
-	                	<div class="text-sm font-medium text-gray-900 dark:text-white"><?php echo $producto; ?></div>
-	                </div>
-                    </div>
-	            </td>
-	            <td class="px-6 py-4 whitespace-nowrap">
-	                <div class="text-sm text-gray-900 dark:text-white"><?php echo $precio; ?></div>
-	            </td>
-	            <td class="px-6 py-4 whitespace-nowrap">
-	                <div class="text-sm text-gray-900 dark:text-white"><?php echo $canntidad; ?></div>
-	            </td>
-	            <td class="px-6 py-4 whitespace-nowrap">
-	                <div class="text-sm text-gray-900 dark:text-white"><?php echo $total; ?></div>
-	            </td>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900 dark:text-white"><?php echo $precio; ?></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900 dark:text-white"><?php echo $canntidad; ?></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900 dark:text-white"><?php echo $total; ?></div>
+                    </td>   
+                </tr>
             <?php } } ?>
             	</tbody>
            	</table>

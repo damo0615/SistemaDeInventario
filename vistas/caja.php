@@ -174,8 +174,14 @@
 <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Barra de navegaci�n -->
     <?php include '../public/navbar.php'; ?>
+    <?php 
+        if ($cliente == "") {
+            echo '<canvas class="bg-gray-200 min-w-full"></canvas>';
+        }elseif ($cliente == "buscar") {
+            echo '<canvas class="bg-gray-200 min-w-full"></canvas>';
+        }else{ ?>
     <!-- Contenido principal -->
-    <div class="pt-16 pb-8">
+    <div class="pt-4 pb-4x">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="px-4 py-6 sm:px-0">
                 <!-- Header -->
@@ -277,8 +283,10 @@
             </div>
         </div>
     </div>
+      <?php  }
+    ?>
     <!-- Dialog de clientes -->
-    <?php }elseif ($cliente == "") { ?>
+    <?php }if ($cliente == "") { ?>
         <form method="POST">
             <div class="grid grid-cols-6 gap-8 super">
                 <div class="col-span-6">
@@ -373,7 +381,6 @@
            <?php }
         }
         ?>
-                
     <script src="../js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

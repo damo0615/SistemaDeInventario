@@ -196,8 +196,8 @@
                     <div class="form-group">
                         <label for="tipo_movimiento">Tipo de Movimiento:</label>
                         <select id="tipo_movimiento" name="tipo_movimiento" class="border bg-primary-300 py-1 rounded-md" required>
-                            <option value="entrada">Carga (Entrada)</option>
-                            <option value="salida">Descarga (Salida)</option>
+                            <option value="C">Carga (Entrada)</option>
+                            <option value="D">Descarga (Salida)</option>
                         </select>
                     </div>
                     

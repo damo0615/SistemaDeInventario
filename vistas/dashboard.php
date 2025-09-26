@@ -209,7 +209,7 @@
                                 }
                             ?>
                 </tbody>
-            </table>
+                </table>
                     </div>
                     </div>
                     <div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 dark:bg-gray-700 dark:border-gray-700">

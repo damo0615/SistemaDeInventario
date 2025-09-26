@@ -18,7 +18,8 @@
         $descrip = $_POST['product-descrip'];
         $codi = mysqli_query($conn, "SELECT * FROM producto WHERE codigo='$codigo'");
         if($codi -> num_rows > 0){
-            echo "<script>window.alert('El codigo ya existe, pruebe otro')</script>";
+           $_SESSION['mensaje_error'] = 'El codigo de producto ya existe, intente con otro';
+           header('location:../inventario.php');
         }else{
             try {
             mysqli_begin_transaction($conn);
@@ -42,6 +43,7 @@
             if(!$bitacora){
                 die("Query Failed");
             }
+            $_SESSION['mensaje_exito'] = 'Producto Guardado con exito!';
             header('location:../inventario.php');
         }
         

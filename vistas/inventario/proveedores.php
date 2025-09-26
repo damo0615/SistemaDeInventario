@@ -38,19 +38,6 @@
                                 <?php
                                 }
                         ?>
-                        <?php if (isset($_SESSION['mensaje_exito'])): ?>
-                            <div class="message success">
-                                <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
-                                <span class="close-btn" data-form="limpiar_exito">&times;</span>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if (isset($_SESSION['mensaje_error'])): ?>
-                            <div class="message error">
-                                <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
-                                <span class="close-btn" data-form="limpiar_error">&times;</span>
-                            </div>
-                        <?php endif; ?>
                     </div>
                     <div class="mt-4 flex md:mt-0 md:ml-4">
                         
@@ -75,6 +62,19 @@
             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
                 Listado Total de Proveedores
             </h3>
+            <?php if (isset($_SESSION['mensaje_exito'])): ?>
+                <div class="message success">
+                    <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
+                    <span class="close-btn" data-form="limpiar_exito">&times;</span>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['mensaje_error'])): ?>
+                <div class="message error">
+                    <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                    <span class="close-btn" data-form="limpiar_error">&times;</span>
+                </div>
+            <?php endif; ?>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">

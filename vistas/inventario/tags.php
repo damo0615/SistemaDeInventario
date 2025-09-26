@@ -1,8 +1,8 @@
 <?php
+    session_start();
     include '../../sesion_time.php';
     include '../../db/db.php';
     include '../php_inyec.php';
-    session_start();
     $user_id = $_SESSION['id'];
     if(!isset($user_id)) {
         header("location:../../sesion/login.php");
@@ -10,33 +10,42 @@
     $query = mysqli_query($conn, "SELECT nombres,id FROM tag ");
     if(isset($_POST['send'])){
         $nombre = limpiar_cadena($_POST['name']);
-        $query1 = mysqli_query($conn, "INSERT INTO tag (nombres) VALUES ('$nombre')");
-        if(!$query1){
-            die("Query Failed");
+        $name = mysqli_query($conn, "SELECT * FROM tag WHERE nombres='$nombre'");
+        if($name -> num_rows > 0){
+           $_SESSION['mensaje_error'] = 'El nombre de la etiqueta ya exite, use otro';
+
+           header('location:tags.php');
+        }else {
+            $query1 = mysqli_query($conn, "INSERT INTO tag (nombres) VALUES ('$nombre')");
+            if(!$query1){
+                die("Query Failed");
+            }
+            $id_user = $_SESSION['id'];
+            $accion = 'El usuario '.$_SESSION['usern'].' ha registrado una nueva etiqueta';
+            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+            if(!$bitacora){
+                die("Query Failed");
+            }
+            header('location:tags.php');
+            }
+            if (isset($_POST['update'])) {
+                $id = $_POST['id'];
+                $nombre = $_POST['name'];
+                $query = mysqli_query($conn, "UPDATE tag set nombres='$nombre' WHERE id='$id'");
+                if(!$query){
+                    die("Query Failed");
+                }
+                $id_user = $_SESSION['id'];
+                $accion = 'El usuario '.$_SESSION['usern'].' ha actualizado una etiqueta';
+                $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+                if(!$bitacora){
+                    die("Query Failed");
+                }
+                $_SESSION['mensaje_exito'] = 'Etiqueta agregada con exito';
+                header('location:tags.php');
+            }
         }
-        $id_user = $_SESSION['id'];
-        $accion = 'El usuario '.$_SESSION['usern'].' ha registrado una nueva etiqueta';
-        $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
-        if(!$bitacora){
-            die("Query Failed");
-        }
-        header('location:tags.php');
-    }
-    if (isset($_POST['update'])) {
-        $id = $_POST['id'];
-        $nombre = $_POST['name'];
-        $query = mysqli_query($conn, "UPDATE tag set nombres='$nombre' WHERE id='$id'");
-        if(!$query){
-            die("Query Failed");
-        }
-        $id_user = $_SESSION['id'];
-        $accion = 'El usuario '.$_SESSION['usern'].' ha actualizado una etiqueta';
-        $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
-        if(!$bitacora){
-            die("Query Failed");
-        }
-        header('location:tags.php');
-    }
+        
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -88,6 +97,19 @@
     <!-- Tabla de Etiquetas -->
     <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+            <?php if (isset($_SESSION['mensaje_exito'])): ?>
+                <div class="message success">
+                    <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
+                    <span class="close-btn" data-form="limpiar_exito">&times;</span>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['mensaje_error'])): ?>
+                <div class="message error">
+                    <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                    <span class="close-btn" data-form="limpiar_error">&times;</span>
+                </div>
+            <?php endif; ?>
             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
                 Listado Total de Etiquetas
             </h3>
@@ -171,5 +193,18 @@
         </div>
     </div>
     <script src="../../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeBtn = document.querySelector('.close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    <?php 
+                        unset($_SESSION['mensaje_exito']);
+                        unset($_SESSION['mensaje_error']);
+                    ?>
+                });
+            }
+        });
+    </script>
 </body>
 </html>

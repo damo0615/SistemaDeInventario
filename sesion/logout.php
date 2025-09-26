@@ -1,27 +1,19 @@
 <?php
-session_start();
-include '../db/db.php';
-$user_session = $_SESSION['id'];
-$user = $_SESSION['usern'];
-    if (!isset($user_session)){
-        header("location:../index.php");
-    };
-$id_user = $_SESSION['id'];
-$accion = 'El usuario '.$user.' ha cerrado sesion';
-$bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
-if(!$bitacora){
-    die("Query Failed");
-}
-session_unset();
-session_destroy();
-
-echo 
-    "<script>
-            userConfirmed = window.alert('sesion cerrada correctamente');  
-            window.location.href(login.php);          
-    </script>";
-
-
+    session_start();
+    include '../db/db.php';
+    $user_session = $_SESSION['id'];
+    $user = $_SESSION['usern'];
+        if (!isset($user_session)){
+            header("location:../index.php");
+        };
+    $id_user = $_SESSION['id'];
+    $accion = 'El usuario '.$user.' ha cerrado sesion';
+    $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+    if(!$bitacora){
+        die("Query Failed");
+    }
+    session_unset();
+    session_destroy();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -33,31 +25,34 @@ echo
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-    <nav class="bg-white dark:bg-gray-800 shadow-md fixed w-full z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <div class="relative max-w-md w-full">
+        <!-- Contenedor del login -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden z-10 relative">
+            <!-- Encabezado con gradiente amarillo -->
+            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 py-8 px-10 text-center">
+                <div class="flex justify-center mb-4">
+                    <div class="bg-white p-3 rounded-full shadow-lg floating">
+                        <i class="fas fa-lock text-yellow-500 text-3xl"></i>
+                    </div>
+                </div>
+                <h1 class="text-2xl font-bold text-white">Sesion Cerrada con exito</h1>
+                <p class="text-yellow-100 mt-1">Precione el boton para volver al login</p>
+            </div>
+            <!-- Formulario -->
+            <div class="px-8 py-8">
+                <div>
                     <a href="login.php">
-                        <button type="button" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                            <i class="fas fa-plus mr-2"></i>Volver al login
-                        </button>
+                        <button type="submit" class="btn-glow w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400 transition">Login</button>
                     </a>
                 </div>
             </div>
         </div>
-        
-        <!-- Men� m�vil -->
-        <div class="md:hidden hidden" id="mobile-menu">
-            <div class="pt-2 pb-3 space-y-1">
-                <a href="login.php">
-                        <button type="button" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                            <i class="fas fa-plus mr-2"></i>Volver al login
-                        </button>
-                </a>
-            </div>
-        </div>
-    </nav>
-    <script src="../js/main.js"></script>
+    </div>
+    <script src="../js/main.js">
+    </script>
+    <?php 
+        include '../public/footer.html';
+    ?>
 </body>
 </html>

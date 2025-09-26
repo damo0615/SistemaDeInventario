@@ -179,9 +179,10 @@ textarea{
     right: -25%;
     top: 25%;
     bottom: -25%;
-    background: rgba(255, 255, 255, .5) ;
+    background: rgba(255, 255, 255, 1) ;
     z-index: 2;
     border: solid rgba(100, 50, 100, 1.0) 1px;
+    border-radius: 20px;
 }
 .barra {
     z-index: 10;
@@ -196,4 +197,26 @@ textarea{
 .confirmar p{
     text-align: center;
     margin-bottom: 8%;
+}
+
+@keyframes caerDesdeArriba {
+      from {
+        top: -150%; /* Empieza fuera de la pantalla */
+      }
+      to {
+        top: -80%; /* Termina en la posición deseada (ej. 50px desde arriba) */
+      }
+    }
+
+.alerta{
+    position: absolute;
+    text-align: center;
+    height: 30%;
+    top: -150%;
+    animation-name: caerDesdeArriba;
+    animation-duration: 1s; /* Duración de la animación */
+    animation-delay: 0.5s; /* Espera antes de iniciar */
+    animation-timing-function: ease-out; /* Suaviza el final del movimiento */
+    animation-fill-mode: forwards; /* Mantiene la posición final del div */
+    animation-iteration-count: 1;
 }
