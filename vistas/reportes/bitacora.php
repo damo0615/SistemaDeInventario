@@ -22,9 +22,10 @@
     <!-- Barra de navegaci�n -->
     <?php include '../../public/navbar.php'; ?>
     <!-- Contenido principal -->
-    <div class="pt-16 pb-8">
-    </div>
-    <!-- Tabla de productos -->
+    <div class="pt-4 pb-2">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="px-4 py-6 sm:px-0">
+                <!-- Tabla de productos -->
     <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
@@ -87,6 +88,9 @@
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
                 </div>
+            </div>
+        </div>
+    </div>
             </div>
         </div>
     </div>

@@ -13,39 +13,39 @@
         if (!isset($_SESSION['mensaje_sql'])) {
             $name = mysqli_query($conn, "SELECT * FROM tag WHERE nombres='$nombre'");
             if($name -> num_rows > 0){
-               $_SESSION['mensaje_error'] = 'El nombre de la etiqueta ya exite, use otro';
+                $_SESSION['mensaje_error'] = 'El nombre de la etiqueta ya exite, use otro';
             }else {
-                $query1 = mysqli_query($conn, "INSERT INTO tag (nombres) VALUES ('$nombre')");
-                if(!$query1){
-                    die("Query Failed");
-                }
-                $id_user = $_SESSION['id'];
-                $accion = 'El usuario '.$_SESSION['usern'].' ha registrado una nueva etiqueta';
-                $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
-                if(!$bitacora){
-                    die("Query Failed");
-                }
-                $_SESSION['mensaje_exito'] = 'Etiqueta agregada con exito';
-                header('location:tags.php');
-                }
+            $query1 = mysqli_query($conn, "INSERT INTO tag (nombres) VALUES ('$nombre')");
+            if(!$query1){
+                die("Query Failed");
             }
-            if (isset($_POST['update'])) {
-                $id = $_POST['id'];
-                $nombre = $_POST['name'];
-                $query = mysqli_query($conn, "UPDATE tag set nombres='$nombre' WHERE id='$id'");
-                if(!$query){
-                    die("Query Failed");
-                }
-                $id_user = $_SESSION['id'];
-                $accion = 'El usuario '.$_SESSION['usern'].' ha actualizado una etiqueta';
-                $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
-                if(!$bitacora){
-                    die("Query Failed");
-                }
-                $query = mysqli_query($conn, "SELECT nombres,id FROM tag ");
-                $_SESSION['mensaje_exito'] = 'Etiqueta editada con exito';
+            $id_user = $_SESSION['id'];
+            $accion = 'El usuario '.$_SESSION['usern'].' ha registrado una nueva etiqueta';
+            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+            if(!$bitacora){
+                die("Query Failed");
             }
-        } 
+            $_SESSION['mensaje_exito'] = 'Etiqueta agregada con exito';
+            header('location:tags.php');
+            }
+        }
+        if (isset($_POST['update'])) {
+            $id = $_POST['id'];
+            $nombre = $_POST['name'];
+            $query = mysqli_query($conn, "UPDATE tag set nombres='$nombre' WHERE id='$id'");
+            if(!$query){
+                die("Query Failed");
+            }
+            $id_user = $_SESSION['id'];
+            $accion = 'El usuario '.$_SESSION['usern'].' ha actualizado una etiqueta';
+            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+            if(!$bitacora){
+                die("Query Failed");
+            }
+            $query = mysqli_query($conn, "SELECT nombres,id FROM tag ");
+            $_SESSION['mensaje_exito'] = 'Etiqueta editada con exito';
+        }
+    } 
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -62,7 +62,7 @@
     <!-- Barra de navegaci�n -->
     <?php include '../../public/navbar.php'; ?>
     <!-- Contenido principal -->
-    <div class="pt-16 pb-8">
+    <div class="pt-4 pb-2">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="px-4 py-6 sm:px-0">
                 <!-- Header -->
@@ -91,9 +91,6 @@
                         </a>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
     <!-- Tabla de Etiquetas -->
     <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
@@ -120,6 +117,21 @@
                 </div>
             <?php endif; ?>
         </div>
+        <table>
+                    <thead>
+                        <th><h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Buscar por:</h3></th>
+                    </thead>
+                    <tbody>
+                        <form method="POST">
+                            <td>
+                                <input type="text" name="texto" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+                            </td>
+                            <td>
+                                <input type="submit" name="buscar" value="Buscar" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 float-right">
+                            </td>  
+                        </form>
+                    </tbody>
+                </table>
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
             <?php
                 if($query->num_rows > 0){
@@ -213,5 +225,8 @@
             }
         });
     </script>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

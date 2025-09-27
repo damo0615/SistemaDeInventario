@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="../style.css">
-<body class="bg-gray-100">
-  <nav class="bg-white text-yellow-600 shadow-md fixed min-w-full z-10">
+<body class="bg-gray-100 fixed min-w-full z-10">
+  <nav class="bg-white text-yellow-600 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 items-center">
         

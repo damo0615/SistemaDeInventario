@@ -11,6 +11,7 @@
     if (isset($_POST['limpiar_mensaje'])) {
         unset($_SESSION['mensaje_exito']);
         unset($_SESSION['mensaje_error']);
+        unset($_SESSION['mensaje_sql']);
         // Redirige para evitar que el POST se reenvíe al recargar
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
@@ -30,106 +31,108 @@
         }
     }
 
+    if (!isset($_SESSION['mensaje_sql'])) {
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar_movimiento'])) {
+            $tipo_movimiento = $_POST['tipo_movimiento'];
+            $lista_productos = json_decode($_POST['lista_productos'], true);
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar_movimiento'])) {
-        $tipo_movimiento = $_POST['tipo_movimiento'];
-        $lista_productos = json_decode($_POST['lista_productos'], true);
+            // Iniciar la transacción para asegurar la consistencia de los datos
+            mysqli_begin_transaction($conn);
+            $todo_ok = true;
+            $mensaje_error = '';
 
-        // Iniciar la transacción para asegurar la consistencia de los datos
-        mysqli_begin_transaction($conn);
-        $todo_ok = true;
-        $mensaje_error = '';
-
-        if (!is_array($lista_productos) || empty($lista_productos)) {
-            $todo_ok = false;
-            $mensaje_error = "No hay productos en la lista para procesar.";
-        }
-
-        if ($todo_ok) {
-            foreach ($lista_productos as $producto) {
-                $id_producto = $producto['id'];
-                $cantidad = $producto['cantidad'];
-
-                if ($cantidad <= 0) {
-                    $todo_ok = false;
-                    $mensaje_error = "La cantidad para el producto " . $producto['nombre'] . " debe ser un número positivo.";
-                    break;
-                }
-
-                try {
-                    // Obtener el ID del inventario y la cantidad actual del producto
-                    $sql_inventario = "SELECT id, cantidad FROM inventario WHERE id_producto = ?";
-                    $stmt_inventario = mysqli_prepare($conn, $sql_inventario);
-                    mysqli_stmt_bind_param($stmt_inventario, "i", $id_producto);
-                    mysqli_stmt_execute($stmt_inventario);
-                    $result = mysqli_stmt_get_result($stmt_inventario);
-                    
-                    if (mysqli_num_rows($result) === 0) {
-                        throw new Exception("Producto con ID '" . $id_producto . "' no encontrado en el inventario.");
-                    }
-                    $row = mysqli_fetch_assoc($result);
-                    $id_inventario = $row['id'];
-                    $cantidad_actual = $row['cantidad'];
-            
-                    // Calcular la nueva cantidad según el tipo de movimiento
-                    $nueva_cantidad = $cantidad_actual;
-                    if ($tipo_movimiento === "C") {
-                        $tipo = "carga";
-                        $nueva_cantidad += $cantidad;
-                        echo $nueva_cantidad;
-                        $bitacora = "INSERT INTO bitacora (accion,id_user) VALUES (?,?)";
-                        $accion = "El usuario ".$username." ha registrado una ".$tipo;
-                        $stmt_bitacora = mysqli_prepare($conn, $bitacora);
-                        mysqli_stmt_bind_param($stmt_bitacora, "si", $accion,$user_id);
-                        mysqli_stmt_execute($stmt_bitacora);
-                        if (!mysqli_stmt_execute($stmt_bitacora)) {
-                            throw new Exception("Error al registrar el movimiento en la bitacora");
-                        }
-                    } elseif ($tipo_movimiento === "D") {
-                        $tipo = "descarga";
-                        if ($cantidad_actual < $cantidad) {
-                            throw new Exception("Stock insuficiente para " . $producto['nombre'] . ". Disponible: $cantidad_actual");
-                        }
-                        $nueva_cantidad -= $cantidad;
-                        $accion = "Se ha registrado una accion de: ".$tipo." por el usuario ".$user_id;
-                        $bitacora = "INSERT INTO bitacora (accion,id_user) VALUES (?,?)";
-                        $stmt_bitacora = mysqli_prepare($conn, $bitacora);
-                        mysqli_stmt_bind_param($stmt_bitacora, "si", $accion,$user_id);
-                        mysqli_stmt_execute($stmt_bitacora);
-                        if (!mysqli_stmt_execute($stmt_bitacora)) {
-                            throw new Exception("Error al registrar el movimiento en la bitacora");
-                        }
-                         
-                    }
-                    
-                    // Actualizar la cantidad en la tabla 'Inventario'
-                    $sql_update = "UPDATE inventario SET cantidad = ? WHERE id = ?";
-                    $stmt_update = mysqli_prepare($conn, $sql_update);
-                    mysqli_stmt_bind_param($stmt_update, "ii", $nueva_cantidad, $id_inventario);
-                    if (!mysqli_stmt_execute($stmt_update)) {
-                        throw new Exception("Error al actualizar el inventario para el producto " . $producto['nombre'] . ".");
-                    }
-
-                    // Registrar el movimiento en la tabla 'movimiento_inventario'
-                    $sql_movimiento = "INSERT INTO movimientos_inventario (id_inv, tipo, cantidad, fecha, cantidad_actual) VALUES (?, ?, ?, NOW(), ?)";
-                    $stmt_movimiento = mysqli_prepare($conn, $sql_movimiento);
-                    mysqli_stmt_bind_param($stmt_movimiento, "isii", $id_inventario, $tipo_movimiento, $cantidad, $nueva_cantidad);
-                    if (!mysqli_stmt_execute($stmt_movimiento)) {
-                        throw new Exception("Error al registrar el movimiento para el producto " . $producto['nombre'] . ".");
-                    }
-
-                } catch (Exception $e) {
-                    $todo_ok = false;
-                    $mensaje_error = $e->getMessage();
-                    break; // Detener el bucle si hay un error
-                }
-            } // Fin del bucle foreach
+            if (!is_array($lista_productos) || empty($lista_productos)) {
+                $todo_ok = false;
+                $_SESSION['mensaje_exito'] = "No hay productos en la lista para procesar.";
+                break;
+            }
 
             if ($todo_ok) {
-                mysqli_commit($conn);
-                $mensaje_exito = "Todas las operaciones de stock realizadas con éxito.";
-            } else {
-                mysqli_rollback($conn);
+                foreach ($lista_productos as $producto) {
+                    $id_producto = $producto['id'];
+                    $cantidad = $producto['cantidad'];
+
+                    if ($cantidad <= 0) {
+                        $todo_ok = false;
+                        $mensaje_error = "La cantidad para el producto " . $producto['nombre'] . " debe ser un número positivo.";
+                        break;
+                    }
+
+                    try {
+                        // Obtener el ID del inventario y la cantidad actual del producto
+                        $sql_inventario = "SELECT id, cantidad FROM inventario WHERE id_producto = ?";
+                        $stmt_inventario = mysqli_prepare($conn, $sql_inventario);
+                        mysqli_stmt_bind_param($stmt_inventario, "i", $id_producto);
+                        mysqli_stmt_execute($stmt_inventario);
+                        $result = mysqli_stmt_get_result($stmt_inventario);
+                        
+                        if (mysqli_num_rows($result) === 0) {
+                            throw new Exception("Producto con ID '" . $id_producto . "' no encontrado en el inventario.");
+                        }
+                        $row = mysqli_fetch_assoc($result);
+                        $id_inventario = $row['id'];
+                        $cantidad_actual = $row['cantidad'];
+                
+                        // Calcular la nueva cantidad según el tipo de movimiento
+                        $nueva_cantidad = $cantidad_actual;
+                        if ($tipo_movimiento === "C") {
+                            $tipo = "carga";
+                            $nueva_cantidad += $cantidad;
+                            echo $nueva_cantidad;
+                            $bitacora = "INSERT INTO bitacora (accion,id_user) VALUES (?,?)";
+                            $accion = "El usuario ".$username." ha registrado una ".$tipo;
+                            $stmt_bitacora = mysqli_prepare($conn, $bitacora);
+                            mysqli_stmt_bind_param($stmt_bitacora, "si", $accion,$user_id);
+                            mysqli_stmt_execute($stmt_bitacora);
+                            if (!mysqli_stmt_execute($stmt_bitacora)) {
+                                throw new Exception("Error al registrar el movimiento en la bitacora");
+                            }
+                        } elseif ($tipo_movimiento === "D") {
+                            $tipo = "descarga";
+                            if ($cantidad_actual < $cantidad) {
+                                throw new Exception("Stock insuficiente para " . $producto['nombre'] . ". Disponible: $cantidad_actual");
+                            }
+                            $nueva_cantidad -= $cantidad;
+                            $accion = "Se ha registrado una accion de: ".$tipo." por el usuario ".$user_id;
+                            $bitacora = "INSERT INTO bitacora (accion,id_user) VALUES (?,?)";
+                            $stmt_bitacora = mysqli_prepare($conn, $bitacora);
+                            mysqli_stmt_bind_param($stmt_bitacora, "si", $accion,$user_id);
+                            mysqli_stmt_execute($stmt_bitacora);
+                            if (!mysqli_stmt_execute($stmt_bitacora)) {
+                                throw new Exception("Error al registrar el movimiento en la bitacora");
+                            }
+                             
+                        }
+                        
+                        // Actualizar la cantidad en la tabla 'Inventario'
+                        $sql_update = "UPDATE inventario SET cantidad = ? WHERE id = ?";
+                        $stmt_update = mysqli_prepare($conn, $sql_update);
+                        mysqli_stmt_bind_param($stmt_update, "ii", $nueva_cantidad, $id_inventario);
+                        if (!mysqli_stmt_execute($stmt_update)) {
+                            throw new Exception("Error al actualizar el inventario para el producto " . $producto['nombre'] . ".");
+                        }
+
+                        // Registrar el movimiento en la tabla 'movimiento_inventario'
+                        $sql_movimiento = "INSERT INTO movimientos_inventario (id_inv, tipo, cantidad, fecha, cantidad_actual) VALUES (?, ?, ?, NOW(), ?)";
+                        $stmt_movimiento = mysqli_prepare($conn, $sql_movimiento);
+                        mysqli_stmt_bind_param($stmt_movimiento, "isii", $id_inventario, $tipo_movimiento, $cantidad, $nueva_cantidad);
+                        if (!mysqli_stmt_execute($stmt_movimiento)) {
+                            throw new Exception("Error al registrar el movimiento para el producto " . $producto['nombre'] . ".");
+                        }
+
+                    } catch (Exception $e) {
+                        $todo_ok = false;
+                        $mensaje_error = $e->getMessage();
+                        break; // Detener el bucle si hay un error
+                    }
+                } // Fin del bucle foreach
+
+                if ($todo_ok) {
+                    mysqli_commit($conn);
+                    $mensaje_exito = "Todas las operaciones de stock realizadas con éxito.";
+                } else {
+                    mysqli_rollback($conn);
+                }
             }
         }
     }
@@ -180,6 +183,12 @@
                         <?php if (isset($_SESSION['mensaje_error'])): ?>
                             <div class="message error">
                                 <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                                <span class="close-btn" data-form="limpiar_error">&times;</span>
+                            </div>
+                        <?php endif; ?>
+                        <?php if (isset($_SESSION['mensaje_sql'])): ?>
+                            <div class="message error">
+                                <?php echo htmlspecialchars($_SESSION['mensaje_sql']); ?>
                                 <span class="close-btn" data-form="limpiar_error">&times;</span>
                             </div>
                         <?php endif; ?>

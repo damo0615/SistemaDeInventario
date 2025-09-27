@@ -13,13 +13,15 @@
         $codigo = limpiar_cadena($_POST['cod-prov']);
         $dir = limpiar_cadena($_POST['dir-prov']);
         $obser = limpiar_cadena($_POST['obser-prov']);
-        $query = mysqli_query($conn, "UPDATE proveedor set nombrep='$name', codigop='$codigo', direccion='$dir', observacion='$obser' WHERE id='$id'");
-        if(!$query){
-            $_SESSION['mensaje_error'] = "Fallo al editar el proveedor";
+        if (!isset($_SESSION['mensaje_sql'])) {
+            $query = mysqli_query($conn, "UPDATE proveedor set nombrep='$name', codigop='$codigo', direccion='$dir', observacion='$obser' WHERE id='$id'");
+            if(!$query){
+                $_SESSION['mensaje_error'] = "Fallo al editar el proveedor";
+                header('location:proveedores.php');
+            }
+            $_SESSION['mensaje_exito'] = "Proveedor editado con exito";
             header('location:proveedores.php');
         }
-        $_SESSION['mensaje_exito'] = "Proveedor editado con exito";
-        header('location:proveedores.php');
     }
 ?>
 <!DOCTYPE html>

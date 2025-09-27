@@ -14,23 +14,25 @@
         $codigo = limpiar_cadena($_POST['cod-prov']);
         $dir = limpiar_cadena($_POST['dir-prov']);
         $obser = limpiar_cadena($_POST['obser-prov']);
-        $codi = mysqli_query($conn, "SELECT * FROM proveedor WHERE codigop='$codigo'");
-        if($codi -> num_rows > 0){
-           $_SESSION['mensaje_error'] = 'El codigo de proveedor ya existe, intente con otro';
-           header('location:proveedores.php');
-        }else{
-            $query = mysqli_query($conn, "INSERT INTO proveedor (nombrep, codigop, direccion, observacion) VALUES ('$name','$codigo','$dir','$obser')");
-            if(!$query){
-                die("Query Failed");
+        if (!isset($_SESSION['mensaje_sql'])) {
+            $codi = mysqli_query($conn, "SELECT * FROM proveedor WHERE codigop='$codigo'");
+            if($codi -> num_rows > 0){
+               $_SESSION['mensaje_error'] = 'El codigo de proveedor ya existe, intente con otro';
+               header('location:proveedores.php');
+            }else{
+                $query = mysqli_query($conn, "INSERT INTO proveedor (nombrep, codigop, direccion, observacion) VALUES ('$name','$codigo','$dir','$obser')");
+                if(!$query){
+                    die("Query Failed");
+                }
+                $id_user = $_SESSION['id'];
+                $accion = 'El usuario '.$_SESSION['usern'].' ha registrado un nuevo proveedor';
+                $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+                if(!$bitacora){
+                    die("Query Failed");
+                }
+                $_SESSION['mensaje_exito'] = 'Proveedor agregado con exito';
+                header('location:proveedores.php');
             }
-            $id_user = $_SESSION['id'];
-            $accion = 'El usuario '.$_SESSION['usern'].' ha registrado un nuevo proveedor';
-            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
-            if(!$bitacora){
-                die("Query Failed");
-            }
-            $_SESSION['mensaje_exito'] = 'Proveedor agregado con exito';
-            header('location:proveedores.php');
         }
     }
 ?>

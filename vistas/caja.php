@@ -10,14 +10,16 @@
     include '../db/db.php';
     $cliente = "";
     if (!empty($_POST['buscar'])) {
-        $busqueda = $_POST['busqueda'];
+        $busqueda = limpiar_cadena($_POST['busqueda']);
         $campo = $_POST['campo'];
-        if ($campo == 'nombre') {
-            $query = mysqli_query($conn, "SELECT * FROM clientes WHERE nombrec = '$busqueda'");
-            $cliente = "buscar";
-        }else if ($campo == 'codigo') {
-            $query = mysqli_query($conn, "SELECT * FROM clientes WHERE codigo = '$busqueda'");
-            $cliente = "buscar";
+        if (!isset($_SESSION['mensaje_sql'])) {
+            if ($campo == 'nombre') {
+                $query = mysqli_query($conn, "SELECT * FROM clientes WHERE nombrec = '$busqueda'");
+                $cliente = "buscar";
+            }else if ($campo == 'codigo') {
+                $query = mysqli_query($conn, "SELECT * FROM clientes WHERE codigo = '$busqueda'");
+                $cliente = "buscar";
+            }
         }
     }
     if (!empty($_POST['confirmar'])){
@@ -42,9 +44,7 @@
         if(!$query_cliente){
             die("Query Failed");
         }
-    }
-
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar_movimiento'])) {
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar_movimiento'])) {
         $lista_productos = json_decode($_POST['lista_productos'], true);
         $cliente_id = $_POST['cliente'];
 
@@ -154,6 +154,8 @@
                 }
             }
         }    
+    }
+
 
     // Obtener la lista de productos para el autocompletado y búsqueda
     $productos_json = "[]";

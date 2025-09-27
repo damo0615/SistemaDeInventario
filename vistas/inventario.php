@@ -1,5 +1,6 @@
 <?php
     include '../sesion_time.php';
+    include 'php_inyec.php';
     session_start();
     $user_id = $_SESSION['id'];
     $username = $_SESSION['usern'];
@@ -8,7 +9,7 @@
     }
     include '../db/db.php';
     // MEJORADO - Seleccionar solo columnas necesarias
-$query = mysqli_query($conn, "SELECT 
+    $query = mysqli_query($conn, "SELECT 
     producto.id, producto.codigo, producto.nombre, producto.precio, producto.descripcion,
     tag.nombres as tag_nombre,
     proveedor.nombrep as proveedor_nombre,
@@ -17,16 +18,29 @@ $query = mysqli_query($conn, "SELECT
     INNER JOIN tag ON producto.id_tag = tag.id 
     INNER JOIN proveedor ON producto.id_proveedor = proveedor.id 
     INNER JOIN inventario ON inventario.id_producto = producto.id
-    ORDER BY producto.id ASC LIMIT 100"); // Limitar resultados
-    
+    ORDER BY producto.id ASC"); 
     if (isset($_POST['limpiar_mensaje'])) {
         unset($_SESSION['mensaje_exito']);
         unset($_SESSION['mensaje_error']);
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     }
-    // FUNCIONES PARA STOCK
-
+    if (isset($_POST['buscar'])) {
+        $busqueda = limpiar_cadena($_POST['texto']);
+        if (!isset($_SESSION['mensaje_sql'])) {
+            $query = mysqli_query($conn, "SELECT 
+            producto.id, producto.codigo, producto.nombre, producto.precio, producto.descripcion,
+            tag.nombres as tag_nombre,
+            proveedor.nombrep as proveedor_nombre,
+            inventario.cantidad as stock
+            FROM producto 
+            INNER JOIN tag ON producto.id_tag = tag.id 
+            INNER JOIN proveedor ON producto.id_proveedor = proveedor.id 
+            INNER JOIN inventario ON inventario.id_producto = producto.id
+            WHERE producto.nombre = '$busqueda' OR producto.codigo = '$busqueda' OR producto.precio = '$busqueda' OR producto.descripcion = '$busqueda' OR tag.nombres = '$busqueda' OR proveedor.nombrep = '$busqueda'
+            ORDER BY producto.id ASC");
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -71,9 +85,7 @@ $query = mysqli_query($conn, "SELECT
                         </a>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+        
     <!-- Tabla de productos -->
     <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800" id="product-list">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700"> 
@@ -92,10 +104,15 @@ $query = mysqli_query($conn, "SELECT
                                 <span class="close-btn" data-form="limpiar_exito">&times;</span>
                             </div>
                         <?php endif; ?>
-
                         <?php if (isset($_SESSION['mensaje_error'])): ?>
                             <div class="message error">
                                 <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                                <span class="close-btn" data-form="limpiar_error">&times;</span>
+                            </div>
+                        <?php endif; ?>
+                        <?php if (isset($_SESSION['mensaje_sql'])): ?>
+                            <div class="message error">
+                                <?php echo htmlspecialchars($_SESSION['mensaje_sql']); ?>
                                 <span class="close-btn" data-form="limpiar_error">&times;</span>
                             </div>
                         <?php endif; ?>
@@ -109,19 +126,10 @@ $query = mysqli_query($conn, "SELECT
                     <tbody>
                         <form method="POST">
                         <td>
-                            
-                                <select name="campo">
-                                    <option value="nombre">Nombre</option>
-                                    <option value="codigo">Codigo</option>
-                                    <option value="categoria">Categoria</option>
-                                    <option value="Proveedor">Proveedor</option>
-                                </select>
+                            <input type="text" name="texto" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white">
                         </td>
                         <td>
-                            <input type="text" name="texto">
-                        </td>
-                        <td>
-                            <input type="submit" name="buscar">
+                            <input type="submit" name="buscar" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 float-right">
                         </td>
                         </form>
                     </tbody>
@@ -387,6 +395,9 @@ $query = mysqli_query($conn, "SELECT
                 </form>
         </dialog>
 </div>
+</div>
+</div>
+</div>
     <script src="../js/main.js">
         function toggleseccion(){
             const tabla_producto_vista = document.getElementByClass('mostrar');
@@ -405,6 +416,7 @@ $query = mysqli_query($conn, "SELECT
                     <?php 
                         unset($_SESSION['mensaje_exito']);
                         unset($_SESSION['mensaje_error']);
+                        unset($_SESSION['mensaje_sql']);
                     ?>
                 });
             }

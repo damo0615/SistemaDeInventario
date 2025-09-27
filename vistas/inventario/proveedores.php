@@ -53,9 +53,6 @@
                         </a>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
     <!-- Tabla de productos -->
     <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
@@ -72,6 +69,12 @@
             <?php if (isset($_SESSION['mensaje_error'])): ?>
                 <div class="message error">
                     <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                    <span class="close-btn" data-form="limpiar_error">&times;</span>
+                </div>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['mensaje_sql'])): ?>
+                <div class="message error">
+                    <?php echo htmlspecialchars($_SESSION['mensaje_sql']); ?>
                     <span class="close-btn" data-form="limpiar_error">&times;</span>
                 </div>
             <?php endif; ?>
@@ -168,45 +171,45 @@
                         <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
                             Agregar Nuevo Proveedor
                         </h3>
-                    </div>
-                    <div class="mt-2">
-                        <form action="aggprov.php" method="POST">
-                        <div class="grid grid-cols-6 gap-6">
-                            <div class="col-span-6 sm:col-span-3">
-                                <label for="product-price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
-                                <div class="mt-1 relative rounded-md shadow-sm">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    </div>
-                                    <input type="text" maxlength="25" name="name-prov" id="product-price" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+            </div>
+            <div class="mt-2">
+                <form action="aggprov.php" method="POST">
+                    <div class="grid grid-cols-6 gap-6">
+                        <div class="col-span-6 sm:col-span-3">
+                            <label for="product-price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 </div>
-                            </div>
-                            <div class="col-span-6 sm:col-span-3">
-                                <label for="product-price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Codigo</label>
-                                <div class="mt-1 relative rounded-md shadow-sm">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    </div>
-                                    <input type="text" maxlength="25" name="cod-prov" id="product-price" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
-                                </div>
-                            </div>
-                            <div class="col-span-6">
-                                <label for="product-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Direccion</label>
-                                <input type="text" maxlength="100" name="dir-prov" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
-                            </div>
-                            
-                            <div class="col-span-6">
-                                <label for="product-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Observaciones</label>
-                                <textarea maxlength="100" id="product-description" name="obser-prov" rows="3" class="mt-1 shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required></textarea>
+                                <input type="text" maxlength="25" name="name-prov" id="product-price" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
                         </div>
+                        <div class="col-span-6 sm:col-span-3">
+                            <label for="product-price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Codigo</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                </div>
+                                <input type="text" maxlength="25" name="cod-prov" id="product-price" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                            </div>
+                        </div>
+                        <div class="col-span-6">
+                            <label for="product-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Direccion</label>
+                            <input type="text" maxlength="100" name="dir-prov" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                        </div>
+                            
+                        <div class="col-span-6">
+                            <label for="product-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Observaciones</label>
+                            <textarea maxlength="100" id="product-description" name="obser-prov" rows="3" class="mt-1 shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-700">
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-700">
                     <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Guardar Proveedor"></input>
                     <button onclick='window.mydialogAgregarProve.close();' type="button" id="cancel-add" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700">Cancelar </button>
-                </div>
-                </form>
-            </div>    
+                    </div>
+                </form>  
+            </div>
         </dialog>
+    </div>
+    </div>
     </div>
     <script src="../../js/main.js"></script>
     <script>
@@ -217,6 +220,7 @@
                     <?php 
                         unset($_SESSION['mensaje_exito']);
                         unset($_SESSION['mensaje_error']);
+                        unset($_SESSION['mensaje_sql']);
                     ?>
                 });
             }

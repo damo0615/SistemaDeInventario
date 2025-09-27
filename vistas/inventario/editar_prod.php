@@ -32,27 +32,29 @@
         $prove = $_POST['product-prov'];
         $descrip = $_POST['product-descrip'];
         $id = $_POST['product-id'];
-        $codi = mysqli_query($conn, "SELECT * FROM producto WHERE codigo='$codigo'");
-        if($codi -> num_rows > 1){
-            echo "<script>window.alert('El codigo ya existe, pruebe otro')</script>";
-        }else{
-            $query = mysqli_query($conn, "UPDATE producto SET nombre='$name', codigo='$codigo', precio='$precio',id_tag='$categoria',id_proveedor='$prove', descripcion='$descrip' WHERE id='$id'");
-            if(!$query){
-                $_SESSION['mensaje_error'] = "Error al editar el productos";
-                header('location:../inventario.php');
+        if (!isset($_SESSION['mensaje_sql'])) {
+            $codi = mysqli_query($conn, "SELECT * FROM producto WHERE codigo='$codigo'");
+            if($codi -> num_rows > 1){
+                echo "<script>window.alert('El codigo ya existe, pruebe otro')</script>";
             }else{
-                $id_user = $_SESSION['id'];
-                $accion = 'El usuario '.$_SESSION['usern'].' ha editado un producto';
-                $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
-                if(!$bitacora){
-                    ("Query Failed");
-                }else{
-                    $_SESSION['mensaje_exito'] = "Producto editado con exito";
+                $query = mysqli_query($conn, "UPDATE producto SET nombre='$name', codigo='$codigo', precio='$precio',id_tag='$categoria',id_proveedor='$prove', descripcion='$descrip' WHERE id='$id'");
+                if(!$query){
+                    $_SESSION['mensaje_error'] = "Error al editar el productos";
                     header('location:../inventario.php');
-                }
-            }           
-            
-            echo $id;
+                }else{
+                    $id_user = $_SESSION['id'];
+                    $accion = 'El usuario '.$_SESSION['usern'].' ha editado un producto';
+                    $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+                    if(!$bitacora){
+                        ("Query Failed");
+                    }else{
+                        $_SESSION['mensaje_exito'] = "Producto editado con exito";
+                        header('location:../inventario.php');
+                    }
+                }           
+                
+                echo $id;
+            }
         }
     }    
 ?>
