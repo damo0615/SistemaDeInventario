@@ -13,7 +13,7 @@
         if(n == 0){
           window.alerta.showModal() 
         }
-      },1800);
+      },600);
       function cerrarSesion(){
         window.confirmar.close();
         window.location.assign("/proyecto/hello/sesion/logout.php");

@@ -79,7 +79,7 @@
                         $precio = $producto['precio'];
 
                         if ($cantidad <= 0) {
-                        $mensaje_error = "La cantidad para el producto " . $producto['nombre'] . " debe ser un número positivo.";
+                            $_SESSION['mensaje_error'] = "Error al registrar el movimiento, verifique que cuenta con el stock necesario de cada producto";
                         break;
                         }
                         if ($todo_ok) {
@@ -88,6 +88,7 @@
                             $stmt_compra_det = mysqli_prepare($conn, $sql_compra_det);
                             mysqli_stmt_bind_param($stmt_compra_det, "iiid", $id_venta, $id_producto, $cantidad, $precio);
                             if (!mysqli_stmt_execute($stmt_compra_det)) {
+                                $_SESSION['mensaje_error'] = "Error al registrar el movimiento";
                                 throw new Exception("Error al registrar el movimiento");
                             }
                         }
@@ -102,7 +103,8 @@
                             $result = mysqli_stmt_get_result($stmt_inventario);
                             
                             if (mysqli_num_rows($result) === 0) {
-                             throw new Exception("Producto con ID '" . $id_producto . "' no encontrado en el inventario.");
+                                $_SESSION['mensaje_error'] = "No se encontro el podructo en el inventario";
+                                throw new Exception("Producto con ID '" . $id_producto . "' no encontrado en el inventario.");
                             }
                             $row = mysqli_fetch_assoc($result);
                             $id_inventario = $row['id'];
@@ -111,7 +113,8 @@
                             // Calcular la nueva cantidad
                             $nueva_cantidad = $cantidad_actual;
                             if ($cantidad_actual < $cantidad) {
-                            throw new Exception("Stock insuficiente para " . $producto['nombre'] . ". Disponible: $cantidad_actual");
+                                $_SESSION['mensaje_error'] = "Error al registrar el movimiento, no hay stock suficiente para proceder";
+                                throw new Exception("Stock insuficiente para " . $producto['nombre'] . ". Disponible: $cantidad_actual");
                             }
                             $nueva_cantidad -= $cantidad;
                             
@@ -121,14 +124,16 @@
                             $stmt_update = mysqli_prepare($conn, $sql_update);
                             mysqli_stmt_bind_param($stmt_update, "ii", $nueva_cantidad, $id_inventario);
                             if (!mysqli_stmt_execute($stmt_update)) {
+                                $_SESSION['mensaje_error'] = "Error al actualizar el inventario";
                                 throw new Exception("Error al actualizar el inventario para el producto " . $producto['nombre'] . ".");
                             }
 
                             // Registrar el movimiento en la tabla 'movimiento_inventario'
-                            $sql_movimiento = "INSERT INTO movimientos_inventario (id_inv, cantidad, fecha, cantidad_actual) VALUES (?, ?, NOW(), ?)";
+                            $sql_movimiento = "INSERT INTO movimientos_inventario (id_inv, tipo,cantidad, fecha, cantidad_actual) VALUES (?, 'V', ?, NOW(), ?)";
                             $stmt_movimiento = mysqli_prepare($conn, $sql_movimiento);
                             mysqli_stmt_bind_param($stmt_movimiento, "iii", $id_inventario, $cantidad, $nueva_cantidad);
                             if (!mysqli_stmt_execute($stmt_movimiento)) {
+                                $_SESSION['mensaje_error'] = "Error al registrar el movimiento para el producto". $producto['nombre'];
                                 throw new Exception("Error al registrar el movimiento para el producto " . $producto['nombre'] . ".");
                             }
 
@@ -140,6 +145,7 @@
                     } // Fin del bucle foreach
                     if ($todo_ok) {
                     mysqli_commit($conn);
+                    $_SESSION['mensaje_exito'] = "La operacion fue realizada con exito"; 
                      $mensaje_exito = "Todas las operaciones de pedido realizadas con éxito.";
                     } else {
                          mysqli_rollback($conn);
@@ -197,19 +203,6 @@
     </div>
     <!-- Tabla de productos -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6" >
-        <?php if (isset($_SESSION['mensaje_exito'])): ?>
-                            <div class="message success">
-                                <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
-                                <span class="close-btn" data-form="limpiar_exito">&times;</span>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if (isset($_SESSION['mensaje_error'])): ?>
-                            <div class="message error">
-                                <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
-                                <span class="close-btn" data-form="limpiar_error">&times;</span>
-                            </div>
-                        <?php endif; ?>
         <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
             <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
                 <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
@@ -293,6 +286,19 @@
                     <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
                         Busque un cliente para proceder:
                     </h2>
+                    <?php if (isset($_SESSION['mensaje_exito'])): ?>
+                        <div class="message success">
+                            <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
+                            <span class="close-btn" data-form="limpiar_exito">&times;</span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (isset($_SESSION['mensaje_error'])): ?>
+                        <div class="message error">
+                            <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                            <span class="close-btn" data-form="limpiar_error">&times;</span>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="col-span-6 sm:col-span-3">
                     <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Buscar Por:</label>

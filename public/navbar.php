@@ -1,5 +1,6 @@
+<link rel="stylesheet" href="../style.css">
 <body class="bg-gray-100">
-  <nav class="bg-white text-yellow-600 shadow-md">
+  <nav class="bg-white text-yellow-600 shadow-md fixed min-w-full z-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 items-center">
         
@@ -15,7 +16,7 @@
         <div class="hidden md:flex space-x-6 items-center">
           <a href="\Proyecto\Hello\vistas\Dashboard.php" class="hover:text-yellow-700">Dashboard</a>
           <a href="\Proyecto\Hello\vistas\caja.php" class="hover:text-yellow-700">Caja</a>
-          <a href="#" class="hover:text-yellow-700">Cliente</a>
+          <a href="\Proyecto\Hello\vistas\clientes.php" class="hover:text-yellow-700">Cliente</a>
 
           <!-- Inventario Dropdown -->
           <div class="relative">

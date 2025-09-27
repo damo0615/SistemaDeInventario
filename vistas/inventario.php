@@ -17,7 +17,7 @@ $query = mysqli_query($conn, "SELECT
     INNER JOIN tag ON producto.id_tag = tag.id 
     INNER JOIN proveedor ON producto.id_proveedor = proveedor.id 
     INNER JOIN inventario ON inventario.id_producto = producto.id
-    ORDER BY producto.id DESC LIMIT 100"); // Limitar resultados
+    ORDER BY producto.id ASC LIMIT 100"); // Limitar resultados
     
     if (isset($_POST['limpiar_mensaje'])) {
         unset($_SESSION['mensaje_exito']);
@@ -164,12 +164,12 @@ $query = mysqli_query($conn, "SELECT
                     <?php
                                 if($query->num_rows > 0){
                                     while($prod = $query->fetch_assoc()){
-                                            $tag = $prod['nombres'];
+                                            $tag = $prod['tag_nombre'];
                                             $nombre = $prod['nombre'];
                                             $codigo = $prod['codigo'];
-                                            $prov = $prod['nombrep'];
+                                            $prov = $prod['proveedor_nombre'];
                                             $precio = $prod['precio'];
-                                            $stock = $prod['cantidad'];
+                                            $stock = $prod['stock'];
                                             $id = $prod['id'];
                                             $descrip = $prod['descripcion'];
                                         ?>  
