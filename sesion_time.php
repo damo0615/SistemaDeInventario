@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="style.css">
-</head>
 <body>
     <dialog id="alerta" class="alerta">
       <p>La sesion fue cerrada por inactividad</p>
@@ -28,4 +20,3 @@
       }
     </script>
 </body>
-</html>

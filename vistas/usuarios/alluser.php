@@ -103,6 +103,19 @@
                         <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
                             verifica el estado de cada uno y gestiona sus acciones
                         </p>
+                        <?php if (isset($_SESSION['mensaje_exito'])): ?>
+                            <div class="message success">
+                                <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
+                                <span class="close-btn" data-form="limpiar_exito">&times;</span>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (isset($_SESSION['mensaje_error'])): ?>
+                            <div class="message error">
+                                <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                                <span class="close-btn" data-form="limpiar_error">&times;</span>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -222,5 +235,18 @@
             </div>
     </dialog>
     <script src="../../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeBtn = document.querySelector('.close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    <?php 
+                        unset($_SESSION['mensaje_exito']);
+                        unset($_SESSION['mensaje_error']);
+                    ?>
+                });
+            }
+        });
+    </script>
 </body>
 </html>

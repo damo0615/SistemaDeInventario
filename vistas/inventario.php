@@ -7,7 +7,17 @@
         header("location:../sesion/login.php");
     }
     include '../db/db.php';
-    $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id INNER JOIN inventario ON inventario.id_producto = producto.id");
+    // MEJORADO - Seleccionar solo columnas necesarias
+$query = mysqli_query($conn, "SELECT 
+    producto.id, producto.codigo, producto.nombre, producto.precio, producto.descripcion,
+    tag.nombres as tag_nombre,
+    proveedor.nombrep as proveedor_nombre,
+    inventario.cantidad as stock
+    FROM producto 
+    INNER JOIN tag ON producto.id_tag = tag.id 
+    INNER JOIN proveedor ON producto.id_proveedor = proveedor.id 
+    INNER JOIN inventario ON inventario.id_producto = producto.id
+    ORDER BY producto.id DESC LIMIT 100"); // Limitar resultados
     
     if (isset($_POST['limpiar_mensaje'])) {
         unset($_SESSION['mensaje_exito']);
@@ -230,7 +240,7 @@
         <!-- Modal para eliminar Productos -->                                              
         <dialog id="mydialogDelete<?php echo $id; ?>" class="po+p">
             <p>Introduzca la contraseña para eliminar el item</p>
-            <form action="inventario/delete_prod.php" method="POST">
+            <form action="inventario/delete/delete_prod.php" method="POST">
                 <input type="password" name="clave">
                 <input type="hidden" name="id" value="<?php echo $id;?>">
                 <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>

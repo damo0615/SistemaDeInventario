@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="../style.css">
 <body class="bg-gray-100">
   <nav class="bg-white text-yellow-600 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,7 +35,11 @@
               <a href="\Proyecto\Hello\vistas\reporte.php" class="block px-4 py-2 hover:bg-yellow-100">Resumen</a>
               <a href="\Proyecto\Hello\vistas\reportes\informes.php" class="block px-4 py-2 hover:bg-yellow-100">Ventas</a>
               <a href="\Proyecto\Hello\vistas\reportes\informes_stock.php" class="block px-4 py-2 hover:bg-yellow-100">Movimientos Stock</a>
-              <a href="\Proyecto\Hello\vistas\reportes\bitacora.php" class="block px-4 py-2 hover:bg-yellow-100">Bitacora</a>
+              <?php 
+                if ($_SESSION['rol'] < 3) {
+                  echo '<a href="\Proyecto\Hello\vistas\reportes\bitacora.php" class="block px-4 py-2 hover:bg-yellow-100">Bitacora</a>';
+                }
+              ?>
             </div>
           </div>
         </div>
@@ -50,12 +53,26 @@
           </button>
           <div id="userDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md py-2 z-10">
             <div class="px-4 py-2 text-sm text-gray-700 border-b">
-              <div class="font-bold">Juan Pérez</div>
-              <div class="text-gray-500">Administrador</div>
+              <div class="font-bold"><?php echo $_SESSION['usern']; ?></div>
+              <div class="text-gray-500">
+                <?php 
+                  if ($_SESSION['rol'] == 3) {
+                    echo 'Operador';
+                  }elseif ($_SESSION['rol'] == 2) {
+                    echo 'Supervisor';
+                  }elseif ($_SESSION['rol'] == 1) {
+                    echo 'Administrador';
+                  }
+                ?> 
+               </div>
             </div>
-            <a href="\Proyecto\Hello\vistas\usuarios\alluser.php" class="block px-4 py-2 hover:bg-yellow-100">Ver todos los usuarios</a>
+            <?php 
+                if ($_SESSION['rol'] < 3) {
+                  echo '<a href="\Proyecto\Hello\vistas\usuarios\alluser.php" class="block px-4 py-2 hover:bg-yellow-100">Ver todos los usuarios</a>';
+                }
+              ?>
             <a href="\Proyecto\Hello\vistas\usuarios\viewuser.php" class="block px-4 py-2 hover:bg-yellow-100">Mi perfil</a>
-            <button onclick="window.confirmar.showModal();" class="block px-4 py-2 hover:bg-yellow-100 text-red-600">Cerrar sesión</button>
+            <a onclick="window.confirmar.showModal();" href="#" class="block px-4 py-2 hover:bg-yellow-100 text-red-600">Cerrar sesión</a>
           </div>
         </div>
 

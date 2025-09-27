@@ -1,9 +1,9 @@
-  <?php 
+<?php 
   	session_start();
- 	include '../../db/db.php';
- 	include '../php_inyec.php';
+ 	include '../../../db/db.php';
+ 	include '../../php_inyec.php';
  	$userid = $_SESSION['id'];
- 	$query = mysqli_query($conn,"SELECT * FROM usuario WHERE id='$userid'");
+ 	$query = mysqli_query($conn,"SELECT id,password FROM usuario WHERE id='$userid'");
  	if(isset($_POST['send'])){
     	if ($comp = $query->fetch_object()) {
     		$hash = $comp->password;
@@ -12,19 +12,22 @@
 			if (password_verify($clave,$hash)) {
 				$query = mysqli_query($conn,"SELECT * FROM producto WHERE id_tag='$id'");
 				if($comp = $query->fetch_object()){
-					echo "No se puede borrar la etiqueta porque hay productos asociadas a esta";
+					$_SESSION['mensaje_error'] = "No puede borrar la etiqueta porque hay registros asociadas a esta";
+					header('location:../tags.php');
 				}else{
 					$borrar = mysqli_query($conn,"DELETE FROM tag WHERE id='$id'");
 					if(!$borrar){
 		                die("Query Failed");
 		            }
-		            header('location:tags.php');
+		            $_SESSION['mensaje_exito'] = "Etiqueta borrada con exito";
+		            header('location:../tags.php');
 				}
 			}else{
-				echo 'la contraseña esta errada';
+				$_SESSION['mensaje_error'] = "La contraseña no coincide";
+				header('location:../tags.php');
 			}
 		}
  	}else{
-			header('location:tags.php');
+			header('location:../tags.php');
 	}
 ?>
