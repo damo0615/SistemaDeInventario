@@ -6,7 +6,7 @@
         header("location:../sesion/login.php");
     }
     include '../../db/db.php';
-    $query = mysqli_query($conn, "SELECT m.id,m.tipo,m.id_inv,m.cantidad,m.cantidad_actual,m.fecha,i.id_producto,p.nombre,p.codigo FROM movimientos_inventario m INNER JOIN inventario i ON m.id_inv = i.id INNER JOIN producto p ON i.id_producto = p.id ORDER BY p.nombre");
+    $query = mysqli_query($conn, "SELECT m.id,m.tipo,m.id_inv,m.cantidad,m.cantidad_actual,m.fecha,i.id_producto,p.nombre,p.codigo FROM movimientos_inventario m INNER JOIN inventario i ON m.id_inv = i.id INNER JOIN producto p ON i.id_producto = p.id ORDER BY m.fecha DESC");
 ?>
 
 <!DOCTYPE html>

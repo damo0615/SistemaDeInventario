@@ -284,7 +284,7 @@
             <div class="grid grid-cols-6 gap-8 super">
                 <div class="col-span-6">
                     <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
-                        Busque un cliente para proceder:
+                        Busque un cliente:
                     </h2>
                     <?php if (isset($_SESSION['mensaje_exito'])): ?>
                         <div class="message success">

@@ -1,7 +1,7 @@
   <?php 
   	session_start();
- 	include '../../db/db.php';
- 	include '../php_inyec.php';
+ 	include '../../../db/db.php';
+ 	include '../../php_inyec.php';
  	$userid = $_SESSION['id'];
  	$query = mysqli_query($conn,"SELECT id,password FROM usuario WHERE id='$userid'");
  	if(isset($_POST['send'])){
@@ -12,24 +12,28 @@
 			if (password_verify($clave,$hash)) {
 				$query = mysqli_query($conn,"SELECT id_producto FROM detalles_compra WHERE id_producto='$id'");
 				if($comp = $query->fetch_object()){
-					echo "No se puede borrar el producto porque hay registros asociadas a este";
+					$_SESSION['mensaje_error'] = "No se puede borrar el producto porque hay registros asociadas a este";
+					header('location:../../inventario.php');
 				}else{
 					$query = mysqli_query($conn,"SELECT id_inv FROM movimientos_inventario WHERE id_inv='$id'");
 					if($comp = $query->fetch_object()){
-						echo "No se puede borrar el producto porque hay registros asociadas a este";
+						$_SESSION['mensaje_error'] = "No se puede borrar el producto porque hay registros asociadas a este";
+						header('location:../../inventario.php');
 					}else{
 						$borrar = mysqli_query($conn,"DELETE FROM producto WHERE id='$id'");
 						if(!$borrar){
 			                die("Query Failed");
 			            }
-			             header('location:../inventario.php');
+			            $_SESSION['mensaje_exito'] = "producto eliminado con exito";
+			             header('location:../../inventario.php');
 					}
 				}
 			}else{
-				echo 'la contraseña esta errada';
+				$_SESSION['mensaje_error'] = 'la contraseña esta errada';
+				header('location:../../inventario.php');
 			}
 		}
  	}else{
-			header('location:../inventario.php');
+			header('location:../../inventario.php');
 	}
 ?>

@@ -14,22 +14,8 @@
     }
     $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id");
     if (isset($_POST['buscar'])) {
-        $campo = limpiar_cadena($_POST['campo']);
         $busqueda = limpiar_cadena($_POST['texto']);
-        if (empty($busqueda)) {
-            if ($campo == 'nombre') {
-            $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id WHERE nombres='$busqueda'");
-            }if ($campo == 'DNI') {
-                $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id WHERE DNI='$busqueda'");
-            }if ($campo == 'username') {
-                $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id WHERE username='$busqueda'");
-            }
-            if ($campo == 'email') {
-                $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id WHERE email='$busqueda'");
-            }else{
-                $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id");
-            }
-        }
+        $query = mysqli_query($conn, "SELECT usuario.id,nombres,nombre,username,email,estatus FROM usuario INNER JOIN permisos ON usuario.id_permiso = permisos.id WHERE nombres='$busqueda'OR dni='$busqueda' OR email='$busqueda' OR username='$busqueda'");
     }
 ?>
 <!DOCTYPE html>
@@ -74,14 +60,6 @@
                     </thead>
                     <tbody>
                         <form method="POST">
-                            <td>
-                                <select name="campo" id="">
-                                    <option value="nombre">Nombre</option>
-                                    <option value="username">Usuario</option>
-                                    <option value="DNI">DNI</option>
-                                    <option value="email">Email</option>
-                                </select>
-                            </td>
                             <td>
                                 <input type="text" name="texto">
                             </td>

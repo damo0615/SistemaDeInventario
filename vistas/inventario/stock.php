@@ -48,7 +48,7 @@
         if ($todo_ok) {
             foreach ($lista_productos as $producto) {
                 $id_producto = $producto['id'];
-                $cantidad = (int)$producto['cantidad'];
+                $cantidad = $producto['cantidad'];
 
                 if ($cantidad <= 0) {
                     $todo_ok = false;
@@ -73,9 +73,10 @@
             
                     // Calcular la nueva cantidad según el tipo de movimiento
                     $nueva_cantidad = $cantidad_actual;
-                    if ($tipo_movimiento === "entrada") {
+                    if ($tipo_movimiento === "C") {
                         $tipo = "carga";
                         $nueva_cantidad += $cantidad;
+                        echo $nueva_cantidad;
                         $bitacora = "INSERT INTO bitacora (accion,id_user) VALUES (?,?)";
                         $accion = "El usuario ".$username." ha registrado una ".$tipo;
                         $stmt_bitacora = mysqli_prepare($conn, $bitacora);
@@ -84,7 +85,7 @@
                         if (!mysqli_stmt_execute($stmt_bitacora)) {
                             throw new Exception("Error al registrar el movimiento en la bitacora");
                         }
-                                } elseif ($tipo_movimiento === "salida") {
+                    } elseif ($tipo_movimiento === "D") {
                         $tipo = "descarga";
                         if ($cantidad_actual < $cantidad) {
                             throw new Exception("Stock insuficiente para " . $producto['nombre'] . ". Disponible: $cantidad_actual");
