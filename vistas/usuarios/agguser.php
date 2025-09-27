@@ -7,6 +7,17 @@
     if(!isset($user_id)) {
         header("location:../../sesion/login.php");
     }
+    function encrypt($string, $key)
+    {
+        $result = '';
+        for ($i = 0; $i < strlen($string); $i++) {
+            $char = substr($string, $i, 1);
+            $keychar = substr($key, ($i % strlen($key)) - 1, 1);
+            $char = chr(ord($char) + ord($keychar));
+            $result .= $char;
+        }
+        return base64_encode($result);
+    }
     $roles = mysqli_query($conn, "SELECT Nombre,id FROM permisos");
     if(!empty($_POST['send'])){
         $nombre = limpiar_cadena($_POST['name']);
@@ -25,8 +36,8 @@
         if (preg_match("/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$/", $password)){
                 if($c_password == $password){
                     $clave = password_hash($password, PASSWORD_BCRYPT, $opcion);
-                    $prep1= password_hash($pre1, PASSWORD_BCRYPT, $opcion);
-                    $prep2= password_hash($pre2, PASSWORD_BCRYPT, $opcion);
+                    $prep1= encrypt($pre1,$keyconfi);
+                    $prep2= encrypt($pre2,$keyconfi);
                     $resp1 = password_hash($res1, PASSWORD_BCRYPT, $opcion);
                     $resp2 = password_hash($res2, PASSWORD_BCRYPT, $opcion);
                     $verfi = mysqli_query($conn, "SELECT * FROM usuario WHERE username='$username' OR email='$email'");
@@ -52,7 +63,6 @@
             echo "<script>window.alert('La contraseña debe tener al menos un numero y un caracter especial')</script>";
         }
     }
-        
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -80,7 +90,7 @@
                         </h3>
                     </div>
                     <div class="mt-2">
-                        <form action="agguser.php" method="POST">
+                        <form action="agregar_usuario.php" method="POST">
                         <div class="grid grid-cols-6 gap-8">
                             <div class="col-span-6">
                                 <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del Usuario</label>

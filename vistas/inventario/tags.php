@@ -13,8 +13,6 @@
         $name = mysqli_query($conn, "SELECT * FROM tag WHERE nombres='$nombre'");
         if($name -> num_rows > 0){
            $_SESSION['mensaje_error'] = 'El nombre de la etiqueta ya exite, use otro';
-
-           header('location:tags.php');
         }else {
             $query1 = mysqli_query($conn, "INSERT INTO tag (nombres) VALUES ('$nombre')");
             if(!$query1){
@@ -26,24 +24,25 @@
             if(!$bitacora){
                 die("Query Failed");
             }
+            $_SESSION['mensaje_exito'] = 'Etiqueta agregada con exito';
             header('location:tags.php');
             }
-            if (isset($_POST['update'])) {
-                $id = $_POST['id'];
-                $nombre = $_POST['name'];
-                $query = mysqli_query($conn, "UPDATE tag set nombres='$nombre' WHERE id='$id'");
-                if(!$query){
-                    die("Query Failed");
-                }
-                $id_user = $_SESSION['id'];
-                $accion = 'El usuario '.$_SESSION['usern'].' ha actualizado una etiqueta';
-                $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
-                if(!$bitacora){
-                    die("Query Failed");
-                }
-                $_SESSION['mensaje_exito'] = 'Etiqueta agregada con exito';
-                header('location:tags.php');
+        }
+        if (isset($_POST['update'])) {
+            $id = $_POST['id'];
+            $nombre = $_POST['name'];
+            $query = mysqli_query($conn, "UPDATE tag set nombres='$nombre' WHERE id='$id'");
+            if(!$query){
+                die("Query Failed");
             }
+            $id_user = $_SESSION['id'];
+            $accion = 'El usuario '.$_SESSION['usern'].' ha actualizado una etiqueta';
+            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+            if(!$bitacora){
+                die("Query Failed");
+            }
+            $query = mysqli_query($conn, "SELECT nombres,id FROM tag ");
+            $_SESSION['mensaje_exito'] = 'Etiqueta editada con exito';
         }
         
 ?>
@@ -97,6 +96,9 @@
     <!-- Tabla de Etiquetas -->
     <div class="bg-white shadow overflow-hidden rounded-lg dark:bg-gray-800">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                Listado Total de Etiquetas
+            </h3>
             <?php if (isset($_SESSION['mensaje_exito'])): ?>
                 <div class="message success">
                     <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
@@ -110,9 +112,6 @@
                     <span class="close-btn" data-form="limpiar_error">&times;</span>
                 </div>
             <?php endif; ?>
-            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                Listado Total de Etiquetas
-            </h3>
         </div>
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
             <?php

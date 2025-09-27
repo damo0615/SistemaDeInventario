@@ -134,7 +134,7 @@
                             
                             <div class="col-span-6">
                                 <label for="product-descrip" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripcion</label>
-                                <textarea id="product-descrip" name="product-descrip" rows="3" class="mt-1 shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" placeholder="Maximo 255 caracteres" required></textarea>
+                                <textarea maxlength="255" id="product-descrip" name="product-descrip" rows="3" class="mt-1 shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" placeholder="Maximo 255 caracteres" required></textarea>
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,18 @@
     include '../db/db.php';
     include '../vistas/php_inyec.php';
     session_start();
+    function decrypt($string, $key)
+    {
+        $result = '';
+        $string = base64_decode($string);
+        for ($i = 0; $i < strlen($string); $i++) {
+            $char = substr($string, $i, 1);
+            $keychar = substr($key, ($i % strlen($key)) - 1, 1);
+            $char = chr(ord($char) - ord($keychar));
+            $result .= $char;
+        }
+        return $result;
+    }
     if(!empty($_SESSION['email'])){
         $email = $_SESSION['email'];
         $pregun = mysqli_query($conn, "SELECT id,pregunta1,pregunta2 FROM usuario WHERE email='$email'");
@@ -64,10 +76,10 @@
                 <form id="loginForm" class="space-y-6" method="POST" action="preguntas.php">
                     <div>
                         <div class="relative">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Pregunta 1: <?php echo '¿'.$pregunta1.'?';?></label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Pregunta 1: <?php echo '¿'.$resultado = decrypt($pregunta1, $keyconfi).'?';?></label>
                             <input type="text" maxlength="25" id="user" name="res1" required 
                                    class="input-effect pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-yellow-400 focus:outline-none transition">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Pregunta 2: <?php echo '¿'.$pregunta2.'?';?></label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Pregunta 2: <?php echo '¿'.$resultado = decrypt($pregunta2, $keyconfi).'?';?></label>
                             <input type="text" maxlength="25" id="user" name="res2" required 
                                    class="input-effect pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-yellow-400 focus:outline-none transition">
                         </div>

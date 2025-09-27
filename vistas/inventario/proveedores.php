@@ -190,12 +190,12 @@
                             </div>
                             <div class="col-span-6">
                                 <label for="product-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Direccion</label>
-                                <input type="text" maxlength="25" name="dir-prov" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="100" name="dir-prov" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
                             </div>
                             
                             <div class="col-span-6">
                                 <label for="product-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Observaciones</label>
-                                <textarea id="product-description" name="obser-prov" rows="3" class="mt-1 shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required></textarea>
+                                <textarea maxlength="100" id="product-description" name="obser-prov" rows="3" class="mt-1 shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required></textarea>
                             </div>
                         </div>
                     </div>
