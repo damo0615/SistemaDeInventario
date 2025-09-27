@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-09-2025 a las 06:05:18
+-- Tiempo de generación: 27-09-2025 a las 23:12:02
 -- Versión del servidor: 10.1.37-MariaDB
 -- Versión de PHP: 7.3.1
 
@@ -57,7 +57,6 @@ CREATE TABLE `clientes` (
 
 CREATE TABLE `compra` (
   `id` int(11) NOT NULL,
-  `item` int(4) NOT NULL,
   `id_user` int(11) DEFAULT NULL,
   `id_cliente` int(11) NOT NULL,
   `total` float(9,2) DEFAULT NULL,
@@ -99,7 +98,7 @@ CREATE TABLE `inventario` (
 CREATE TABLE `movimientos_inventario` (
   `id` int(11) NOT NULL,
   `id_inv` int(11) DEFAULT NULL,
-  `tipo` enum('A','D','V') DEFAULT NULL,
+  `tipo` enum('C','D','V') DEFAULT NULL,
   `cantidad` int(3) DEFAULT NULL,
   `fecha` datetime DEFAULT NULL,
   `cantidad_actual` int(3) DEFAULT NULL
@@ -152,6 +151,18 @@ CREATE TABLE `producto` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `producto_tags`
+--
+
+CREATE TABLE `producto_tags` (
+  `id` int(11) NOT NULL,
+  `id_tag` int(11) DEFAULT NULL,
+  `id_producto` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `proveedor`
 --
 
@@ -163,14 +174,6 @@ CREATE TABLE `proveedor` (
   `observacion` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Volcado de datos para la tabla `proveedor`
---
-
-INSERT INTO `proveedor` (`id`, `nombrep`, `direccion`, `codigop`, `observacion`) VALUES
-(1, 'Kamila', 'Caracas, Dtto. Capital', '000001', 'Ropa interior, deportiva, del hogar Y accesorios'),
-(2, 'Wilson', 'Mercado Viejo de Coro', '00002', 'es un proveedor nuevo, solo es test');
-
 -- --------------------------------------------------------
 
 --
@@ -181,14 +184,6 @@ CREATE TABLE `tag` (
   `id` int(11) NOT NULL,
   `nombres` varchar(25) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Volcado de datos para la tabla `tag`
---
-
-INSERT INTO `tag` (`id`, `nombres`) VALUES
-(3, 'Caballero'),
-(5, 'Dama');
 
 -- --------------------------------------------------------
 
@@ -216,8 +211,11 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id`, `nombres`, `dni`, `username`, `email`, `password`, `id_permiso`, `estatus`, `pregunta1`, `respuesta1`, `pregunta2`, `respuesta2`) VALUES
-(11, 'Caballero', '32150150', 'Loquesea', 'realdo@gmail.com', '$2y$12$WY6QGzlUYLyg8D.a5hcNeuDqfY.nDZIPfSO4lAryNUxsFHZSWb6p.', 1, 1, '$2y$12$tmatq.FryHTpf85mXn206exFtesN0kYc3AhvbKL89ecy6whIxm2wK', '$2y$12$pU6.QZp3oKNMd9Ge3HS4O.wy6.5FmetQgZj4Cuxt4tAgAdvZaQihy', '$2y$12$/A.yNhqetCXh6Fb4.6jbKO2oZ6w5U.wQZFiE2APjAaZZgrSxfmUea', '$2y$12$IRyPcVgt49yxRa.6oHN9se7BCntfr8JKCY8Jk1Ipq3kfGUgEl7LCC'),
-(12, 'Prueba', '126123450', 'operador', 'test@test.com', '$2y$12$7CL1Xz5fcvsgEMfG5EUYVePLujpXghDirT.7JwqdRk0F8P5/EMuIK', 3, 1, '$2y$12$bJRf9sdBKiIfzwxAF4BTp.qSmxw4VrS68M2BDWQ86Gkl7VvRbR0qa', '$2y$12$6bKQ8je09Ec/BKFEzQ2ncuVpSsU4mCJDa9Zl9q33Nc/75WV/5Je.q', '$2y$12$4hs0R7EFkzh72wGP1Wp0muxaMTwux7i8Re8kCd/KT3qi.sUyd6iZq', '$2y$12$iXYxR4Ql9X2BnKONCrJXueeMRnk6ZGilpbc.slVT25rN17.5aaDlG');
+(11, 'Caballero', '3215015345', 'Loquesea', 'daniel@gmail.com', '$2y$12$WY6QGzlUYLyg8D.a5hcNeuDqfY.nDZIPfSO4lAryNUxsFHZSWb6p.', 1, 1, '$2y$12$tmatq.FryHTpf85mXn206exFtesN0kYc3AhvbKL89ecy6whIxm2wK', '$2y$12$pU6.QZp3oKNMd9Ge3HS4O.wy6.5FmetQgZj4Cuxt4tAgAdvZaQihy', '$2y$12$/A.yNhqetCXh6Fb4.6jbKO2oZ6w5U.wQZFiE2APjAaZZgrSxfmUea', '$2y$12$IRyPcVgt49yxRa.6oHN9se7BCntfr8JKCY8Jk1Ipq3kfGUgEl7LCC'),
+(12, 'Prueba', '126123450', 'operador', 'test@test.com', '$2y$12$7CL1Xz5fcvsgEMfG5EUYVePLujpXghDirT.7JwqdRk0F8P5/EMuIK', 2, 1, '$2y$12$bJRf9sdBKiIfzwxAF4BTp.qSmxw4VrS68M2BDWQ86Gkl7VvRbR0qa', '$2y$12$6bKQ8je09Ec/BKFEzQ2ncuVpSsU4mCJDa9Zl9q33Nc/75WV/5Je.q', '$2y$12$4hs0R7EFkzh72wGP1Wp0muxaMTwux7i8Re8kCd/KT3qi.sUyd6iZq', '$2y$12$iXYxR4Ql9X2BnKONCrJXueeMRnk6ZGilpbc.slVT25rN17.5aaDlG'),
+(13, 'Romulo', '1234556678', 'DiegoM', 'daniel.oviedo1@hotmail.com', '$2y$12$AJR5TSqzhpPb05tp5OSD0.kqA5Ab71GoL3OSUf3i.hkW39W3aM7p6', 3, 1, '$2y$12$H6YYFSgFEPcxWTyuS8Zzseu0xVCLjfvxNpSjGbygss5qahdT3Pav.', '$2y$12$MKW3HrMRUvnHaw8LfsY6R.0LYo7xH/FYSDgporqSwQrygjGkWEEmu', '$2y$12$zrV0RKA2MojUlNZtkHA3T.qsiIyfdNYbjlZ6itwQlzQTR1w6mPpiW', '$2y$12$t1N2Bm3QosCICCUXIZFWqe6wBO6ge2dAszyWqJjv36p7G9raDDyg2'),
+(14, 'Megatron', '85858569', 'Epale', 'megratron@gmail.com', '$2y$12$h3hHVt5cd6tzHs.SRhPhmOkH4FyDy2isDVQ6qikBxuZwxKRGTRr.i', 2, 0, '$2y$12$oapwAM2NJ6Rh5pyYdLK42u.tmcuVRuYOGdMRIUCiz7cjKmjUwtCH2', '$2y$12$chvf01dwpjTpQou1FVSTJu/xGEEJJhCTCtNqfygGO9NxMJwZ7hn/u', '$2y$12$mrHBlYCfT/5rYJ7bJCdcZOzTiTNuVw2DfiECCif1HyUdCV9QkIwSe', '$2y$12$qbAtnx3Ot1q2l22tg9uYTez7fTPaBXVfsn5CFLheFXUaB1ZNQ395S'),
+(17, 'Cristiano Ronaldo', '07070707', 'CR7', 'cr7@cr7.com', '$2y$12$QaOUIOFPuGxDnH0oFgrQ0.bodN3UmyoKmmXUyX0fauJlOaxeUoOfC', 2, 0, 'jdHZ4OeFttHWkw==', '$2y$12$Yuiz6EXZSeaS/l9eiXunFOnZs/n4yw9zFJQ9B3K.7lSThrsx.aODW', 'iNXZ4JWy1N7Qow==', '$2y$12$j2qFWOil/2PbihCjfVzO2u35/.s9HC/Y.OtHuSjog2FYv5lXgAPKi');
 
 --
 -- Índices para tablas volcadas
@@ -275,6 +273,12 @@ ALTER TABLE `producto`
   ADD UNIQUE KEY `codigo` (`codigo`),
   ADD KEY `etiqueta` (`id_tag`),
   ADD KEY `proveedores` (`id_proveedor`);
+
+--
+-- Indices de la tabla `producto_tags`
+--
+ALTER TABLE `producto_tags`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `proveedor`
@@ -349,22 +353,28 @@ ALTER TABLE `producto`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `producto_tags`
+--
+ALTER TABLE `producto_tags`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `proveedor`
 --
 ALTER TABLE `proveedor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tag`
 --
 ALTER TABLE `tag`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Restricciones para tablas volcadas
