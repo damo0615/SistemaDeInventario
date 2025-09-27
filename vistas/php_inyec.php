@@ -8,6 +8,10 @@
         $cadena = trim($cadena);
         $cadena = stripslashes($cadena);
         $longitud = strlen($cadena);
-        return $cadena;
+        if (!empty($cadena)) {
+            return $cadena;
+        }else{
+            $_SESSION['mensaje_sql'] = "INGRESE UN VALOR VALIDO AL REGISTRO";
+        }
     }
 ?>

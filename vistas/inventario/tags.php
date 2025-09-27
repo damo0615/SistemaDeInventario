@@ -10,41 +10,42 @@
     $query = mysqli_query($conn, "SELECT nombres,id FROM tag ");
     if(isset($_POST['send'])){
         $nombre = limpiar_cadena($_POST['name']);
-        $name = mysqli_query($conn, "SELECT * FROM tag WHERE nombres='$nombre'");
-        if($name -> num_rows > 0){
-           $_SESSION['mensaje_error'] = 'El nombre de la etiqueta ya exite, use otro';
-        }else {
-            $query1 = mysqli_query($conn, "INSERT INTO tag (nombres) VALUES ('$nombre')");
-            if(!$query1){
-                die("Query Failed");
+        if (!isset($_SESSION['mensaje_sql'])) {
+            $name = mysqli_query($conn, "SELECT * FROM tag WHERE nombres='$nombre'");
+            if($name -> num_rows > 0){
+               $_SESSION['mensaje_error'] = 'El nombre de la etiqueta ya exite, use otro';
+            }else {
+                $query1 = mysqli_query($conn, "INSERT INTO tag (nombres) VALUES ('$nombre')");
+                if(!$query1){
+                    die("Query Failed");
+                }
+                $id_user = $_SESSION['id'];
+                $accion = 'El usuario '.$_SESSION['usern'].' ha registrado una nueva etiqueta';
+                $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+                if(!$bitacora){
+                    die("Query Failed");
+                }
+                $_SESSION['mensaje_exito'] = 'Etiqueta agregada con exito';
+                header('location:tags.php');
+                }
             }
-            $id_user = $_SESSION['id'];
-            $accion = 'El usuario '.$_SESSION['usern'].' ha registrado una nueva etiqueta';
-            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
-            if(!$bitacora){
-                die("Query Failed");
+            if (isset($_POST['update'])) {
+                $id = $_POST['id'];
+                $nombre = $_POST['name'];
+                $query = mysqli_query($conn, "UPDATE tag set nombres='$nombre' WHERE id='$id'");
+                if(!$query){
+                    die("Query Failed");
+                }
+                $id_user = $_SESSION['id'];
+                $accion = 'El usuario '.$_SESSION['usern'].' ha actualizado una etiqueta';
+                $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+                if(!$bitacora){
+                    die("Query Failed");
+                }
+                $query = mysqli_query($conn, "SELECT nombres,id FROM tag ");
+                $_SESSION['mensaje_exito'] = 'Etiqueta editada con exito';
             }
-            $_SESSION['mensaje_exito'] = 'Etiqueta agregada con exito';
-            header('location:tags.php');
-            }
-        }
-        if (isset($_POST['update'])) {
-            $id = $_POST['id'];
-            $nombre = $_POST['name'];
-            $query = mysqli_query($conn, "UPDATE tag set nombres='$nombre' WHERE id='$id'");
-            if(!$query){
-                die("Query Failed");
-            }
-            $id_user = $_SESSION['id'];
-            $accion = 'El usuario '.$_SESSION['usern'].' ha actualizado una etiqueta';
-            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
-            if(!$bitacora){
-                die("Query Failed");
-            }
-            $query = mysqli_query($conn, "SELECT nombres,id FROM tag ");
-            $_SESSION['mensaje_exito'] = 'Etiqueta editada con exito';
-        }
-        
+        } 
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -109,6 +110,12 @@
             <?php if (isset($_SESSION['mensaje_error'])): ?>
                 <div class="message error">
                     <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                    <span class="close-btn" data-form="limpiar_error">&times;</span>
+                </div>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['mensaje_sql'])): ?>
+                <div class="message error">
+                    <?php echo htmlspecialchars($_SESSION['mensaje_sql']); ?>
                     <span class="close-btn" data-form="limpiar_error">&times;</span>
                 </div>
             <?php endif; ?>
@@ -200,6 +207,7 @@
                     <?php 
                         unset($_SESSION['mensaje_exito']);
                         unset($_SESSION['mensaje_error']);
+                        unset($_SESSION['mensaje_sql']);
                     ?>
                 });
             }
