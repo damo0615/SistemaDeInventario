@@ -399,6 +399,7 @@
 </div>
 </div>
     <script src="../js/main.js">
+    <script src="../js/validador.js">
         function toggleseccion(){
             const tabla_producto_vista = document.getElementByClass('mostrar');
             const tabla_producto_oculta = document.getElementByClass('ocultar');

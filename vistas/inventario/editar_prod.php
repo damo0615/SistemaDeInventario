@@ -175,5 +175,6 @@
     
     
     <script src="../../js/main.js"></script>
+    <script src="../../js/validador.js"></script>
 </body>
 </html>

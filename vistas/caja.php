@@ -390,6 +390,7 @@
         }
         ?>
     <script src="../js/main.js"></script>
+    <script src="../js/validador.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const productosData = <?php echo $productos_json; ?>;
