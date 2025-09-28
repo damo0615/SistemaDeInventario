@@ -152,12 +152,6 @@
         const toggleButton = document.getElementById('togglePassword');
         const closeBtn = document.getElementById('closeBtn');
 
-        closeBtn.addEventListener('click',function(){
-            <?php 
-                        unset($_SESSION['mensaje_error']);
-                    ?>
-        });
-
         toggleButton.addEventListener('click', function() {
           const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
           passwordInput.setAttribute('type', type);
