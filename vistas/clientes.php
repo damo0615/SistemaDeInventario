@@ -13,7 +13,7 @@
         echo "Activo";
         $nombre = limpiar_cadena($_POST['nombre']);
         $codigo = limpiar_cadena($_POST['codigo']);
-        $DNI = limpiar_cadena($_POST['dni']);
+        $dni = limpiar_cadena($_POST['dni']);
         $telefono = limpiar_cadena($_POST['telefono']);
         $id = limpiar_cadena($_POST['cliente']);
         $query = mysqli_query($conn, "SELECT codigo,dni FROM clientes WHERE codigo='$codigo' OR dni='$dni'");        
