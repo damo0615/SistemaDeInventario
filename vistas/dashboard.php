@@ -8,10 +8,34 @@
     include '../db/db.php';
     $query = mysqli_query($conn, "SELECT * FROM producto INNER JOIN tag ON producto.id_tag = tag.id INNER JOIN proveedor ON producto.id_proveedor = proveedor.id INNER JOIN inventario ON inventario.id_producto = producto.id LIMIT 10");
     $prod = mysqli_query($conn, "SELECT count(*) AS total FROM producto");
-    $pre = mysqli_query($conn, "SELECT SUM(precio) AS total FROM producto");
     $tags = mysqli_query($conn, "SELECT count(*) AS total FROM tag");
-
-    
+    $mes_actual = date('m');
+    $año_actual = date('Y');
+    $ventas_mes = mysqli_query($conn, "SELECT SUM(total) as total_mes FROM compra WHERE YEAR(fecha) = '$año_actual' AND MONTH(fecha) = '$mes_actual'");
+    $inicio_dia = date('Y-m-d 00:00:00');
+    $fin_dia = date('Y-m-d 23:59:59');
+    $total_dia = mysqli_query($conn, "SELECT SUM(total) as total_dia FROM compra WHERE fecha BETWEEN '$inicio_dia' AND '$fin_dia'");
+    if ($total_dia) {
+        $fila = mysqli_fetch_assoc($total_dia);
+        $total_ventas = $fila['total_dia'] ? $fila['total_dia'] : 0;
+        
+        // Formatear fecha en español
+        $dias_es = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        $meses_es = [
+            '01' => 'Enero', '02' => 'Febrero', '03' => 'Marzo', '04' => 'Abril',
+            '05' => 'Mayo', '06' => 'Junio', '07' => 'Julio', '08' => 'Agosto',
+            '09' => 'Septiembre', '10' => 'Octubre', '11' => 'Noviembre', '12' => 'Diciembre'
+        ];
+        
+        $nombre_dia = $dias_es[date('w')];
+        $nombre_mes = $meses_es[date('m')];
+        $dia_numero = date('d');
+        $año_actual = date('Y');
+        
+    } else {
+        echo "Error en la consulta: " . mysqli_error($conexion);
+    }
+        
     ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -110,11 +134,16 @@
                                 </div>
                                 <div class="ml-5 w-0 flex-1">
                                     <dt class="text-sm font-medium text-gray-500 truncate dark:text-gray-400">
-                                        Bajo stock (< 10)
+                                        <h4>Ventas</h4>
+                                       <?php
+                                       echo "<h4>$nombre_dia $dia_numero</h4>";
+                                       ?>
                                     </dt>
                                     <dd class="flex items-baseline">
                                         <div class="text-2xl font-semibold text-gray-900 dark:text-white">
-                                            0
+                                            <?php  
+                                                echo number_format($total_ventas, 2);
+                                            ?>
                                         </div>
                                     </dd>
                                 </div>
@@ -134,8 +163,12 @@
                                     <dd class="flex items-baseline">
                                         <div class="text-2xl font-semibold text-gray-900 dark:text-white">
                                             <?php 
-                                            $totalp = mysqli_fetch_assoc($pre);
-                                            echo $totalp['total'];       
+                                                if ($ventas_mes) {
+                                                    $fila = mysqli_fetch_assoc($ventas_mes);
+                                                    $total_ventas = $fila['total_mes'] ? $fila['total_mes'] : 0;
+                                                    
+                                                    echo number_format($total_ventas, 2);
+                                                }
                                             ?>
                                         </div>
                                     </dd>

@@ -43,7 +43,7 @@
       }
       function cerrarSesion(){
         window.confirmar.close();
-        window.location.assign("/proyecto/hello/sesion/logout.php");
+        window.location.assign("/proyecto/sesion/logout.php");
       }
     </script>
 </body>

@@ -345,55 +345,6 @@
                 </form>
             </div>    
         </dialog>
-    <!-- Modal para gestionar stock -->
-        <dialog id="stock" class="min-h-screen pt-4 px-4 pb-20">
-            <div class="md:flex md:items-center md:justify-between mb-6">
-                    <div class="flex-1 min-w-0">
-                        <h1 class="text- 2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">Gestión de Stock</h1>
-                        
-                         <?php if (isset($_SESSION['mensaje_exito'])): ?>
-                            <div class="message success">
-                                <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
-                                <span class="close-btn" data-form="limpiar_exito">&times;</span>
-                            </div>
-                        <?php endif; ?>
-
-                        <?php if (isset($_SESSION['mensaje_error'])): ?>
-                            <div class="message error">
-                                <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
-                                <span class="close-btn" data-form="limpiar_error">&times;</span>
-                            </div>
-                        <?php endif; ?>
-
-                        <form id="add-form">
-                            <input type="text" maxlength="25" id="codigo_producto" placeholder="Código de Producto" list="codigos" class="mt-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales">
-                            <input type="number" max="200" maxlength="3" id="cantidad_producto" placeholder="Cantidad" min="1" class="mt-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="numero">
-                            <button type="submit" id="add-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Agregar</button>
-                            <datalist id="codigos">
-                            </datalist>
-                        </form>
-                    </div>
-                </div>
-                <form id="main-form" action="stock.php" method="POST">
-                    <div class="form-group">
-                        <label for="tipo_movimiento">Tipo de Movimiento:</label>
-                        <select id="tipo_movimiento" name="tipo_movimiento" class="border bg-primary-300 py-1 rounded-md" required>
-                            <option value="entrada">Carga (Entrada)</option>
-                            <option value="salida">Descarga (Salida)</option>
-                        </select>
-                    </div>
-                    
-                    <h2>Lista de Productos</h2>
-                    <div class="lista-productos bg-white shadow shadow-primary-200 overflow-hidden rounded-lg dark:bg-gray-800">
-                        <ul id="product-list" class="border-b-primary-2">
-                        </ul>
-                    </div>
-                    
-                    <input type="hidden" name="lista_productos" id="lista_productos">
-                    <br>
-                    <button type="submit" name="procesar_movimiento" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Procesar Movimiento</button>
-                </form>
-        </dialog>
 </div>
 </div>
 </div>

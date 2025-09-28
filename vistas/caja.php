@@ -39,12 +39,17 @@
         if(!$query){
             die("Query Failed");
         }
+        $id_user = $_SESSION['id'];
+        $accion = 'El usuario '.$_SESSION['usern'].' ha registrado un cliente';
+        $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+        if(!$bitacora){
+            die("Query Failed");
+        }
         $cliente = "confirmado";
         $query_cliente = mysqli_query($conn,"SELECT * FROM clientes WHERE codigo = '$codigo'");
         if(!$query_cliente){
             die("Query Failed");
         }
-        echo "hola";
     }
     if (isset($_POST['procesar_movimiento'])) {
             $lista_productos = json_decode($_POST['lista_productos'], true);
@@ -145,9 +150,14 @@
                             }
                         } // Fin del bucle foreach
                         if ($todo_ok) {
-                        mysqli_commit($conn);
-                        $_SESSION['mensaje_exito'] = "La operacion fue realizada con exito"; 
-                         $mensaje_exito = "Todas las operaciones de pedido realizadas con éxito.";
+                            mysqli_commit($conn);
+                            $_SESSION['mensaje_exito'] = "La operacion fue realizada con exito"; 
+                            $id_user = $_SESSION['id'];
+                            $accion = 'El usuario '.$_SESSION['usern'].' ha registrado una venta';
+                            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+                            if(!$bitacora){
+                                die("Query Failed");
+                            }
                         } else {
                              mysqli_rollback($conn);
                         } 

@@ -205,12 +205,11 @@
                     </div>
                 </div>
     <dialog id="mydialog" class="confirmar">
-        <div class="popitems">
-            <h1>¿Seguro que quiere cerrar sesion?</h1>
-            <br>
-            <button onclick='window.location.href = "../../sesion/logout.php";' class="rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:text-sm">Si, cerrar</button>
-            <button onclick='window.mydialog.close();' class="rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:text-sm">Cancel</button>
-            </div>
+      <div class=" md:items-center md:justify-between mb-6">
+        <p>Seguro que quiere cerrar sesion?</p>
+        <button onclick='window.mydialog.close();' class="ml-3 float-right inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">No</button>
+        <a href="\Proyecto\sesion\logout.php"><button class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Si</button></a>
+      </div>
     </dialog>
     <script src="../../js/main.js"></script>
     <script src="../../js/validador.js"></script>

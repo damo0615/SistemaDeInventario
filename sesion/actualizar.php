@@ -20,7 +20,7 @@
                     if(!$query){
                         die("Query Failed");
                     }
-                    header('location:../vistas/dashboard.php');
+                    header('location:login.php');
                 }else{
                     echo "<script>window.alert('Las Contraseñas deben coincidir')</script>";
                 }

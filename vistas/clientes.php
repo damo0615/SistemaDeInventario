@@ -1,13 +1,36 @@
 <?php
     include '../sesion_time.php';
+    include '../vistas/php_inyec.php';
     session_start();
     $user_id = $_SESSION['id'];
     if(!isset($user_id)) {
         header("location:../sesion/login.php");
     }
     include '../db/db.php';
-    $query = mysqli_query($conn, "SELECT id,nombrec, codigo, dni, telefono FROM clientes")
+    $query = mysqli_query($conn, "SELECT id,nombrec, codigo, dni, telefono FROM clientes");
     
+    if (!empty($_POST['update'])) {
+        echo "Activo";
+        $nombre = limpiar_cadena($_POST['nombre']);
+        $codigo = limpiar_cadena($_POST['codigo']);
+        $DNI = limpiar_cadena($_POST['dni']);
+        $telefono = limpiar_cadena($_POST['telefono']);
+        $id = limpiar_cadena($_POST['cliente']);
+        $query = mysqli_query($conn, "SELECT codigo,dni FROM clientes WHERE codigo='$codigo' OR dni='$dni'");        
+        if ($query->num_rows > 1) {
+            $_SESSION['mensaje_error'] = "El codigo o DNI coinciden con otro cliente, por favor intente con otro";
+        }else{
+            $query = mysqli_query($conn, "UPDATE clientes SET nombrec='$nombre',codigo='$codigo',dni='$dni',telefono='$telefono' WHERE id='$id'");
+            $id_user = $_SESSION['id'];
+            $accion = 'El usuario '.$_SESSION['usern'].' ha actualizado un cliente';
+            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+            if(!$bitacora){
+                die("Query Failed");
+            }
+            $_SESSION['mensaje_exito'] = 'cliente editado con exito';
+        }
+    }
+
     ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -37,6 +60,19 @@
                         <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
                             Movimientos y gestion de clientes
                         </p>
+                        <?php if (isset($_SESSION['mensaje_exito'])): ?>
+                        <div class="message success">
+                            <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
+                            <span class="close-btn" data-form="limpiar_exito">&times;</span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (isset($_SESSION['mensaje_error'])): ?>
+                        <div class="message error">
+                            <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
+                            <span class="close-btn" data-form="limpiar_error">&times;</span>
+                        </div>
+                    <?php endif; ?>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -99,56 +135,50 @@
                     </button>
                     <dialog id="mydialog<?php echo $cliente['id']; ?>">
                         <p>Introduzca la contraseña para eliminar el item</p>
-                        <form action="delete/delete_provee.php" method="POST">
+                        <form action="usuarios/delete_cliente.php" method="POST">
                             <input type="password" name="clave">
                             <input type="hidden" name="id" value="<?php echo $cliente['id']?>">
                             <input type="submit" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
                         </form>
                         <button onclick='window.mydialog<?php echo $cliente['id']; ?>.close();'>Cerrar modal</button>
                     </dialog>
-                    <dialog id="editar<?php echo $cliente['id']; ?>">
-                        <form method="POST">
-                            <div class="grid grid-cols-6 gap-8 super">
-                                <div class="col-span-6">
-                                    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
-                                        Busque un cliente para proceder:
-                                    </h2>
-                                    <?php if (isset($_SESSION['mensaje_exito'])): ?>
-                                        <div class="message success">
-                                            <?php echo htmlspecialchars($_SESSION['mensaje_exito']); ?>
-                                            <span class="close-btn" data-form="limpiar_exito">&times;</span>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if (isset($_SESSION['mensaje_error'])): ?>
-                                        <div class="message error">
-                                            <?php echo htmlspecialchars($_SESSION['mensaje_error']); ?>
-                                            <span class="close-btn" data-form="limpiar_error">&times;</span>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Buscar Por:</label>
-                                    <select id="product-category" name="campo" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
-                                        <option value="nombre">Nombre</option>
-                                        <option value="codigo">Codigo</option>
-                                    </select>
-                                </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="user-name" class="block text-sm font-medium text-white-700 dark:text-white-300">.</label>
-                                    <input type="text" maxlength="25" name="busqueda" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
-                                </div>
-                                <div class="col-span-6 sm:col-span-3">
-                                    <input type="submit" id="save-product" name="buscar" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Buscar Usuario"></input>
-                                </div>
-                            </div>
-                        </form>
-                    </dialog>
                 </td>
                 <?php
             }
         ?>
                                                 </tr>
+                    <dialog id="editar<?php echo $cliente['id']; ?>" class="pop">
+                        <form method="POST" action="clientes.php">
+                            <div class="grid grid-cols-6 gap-8">
+                                <div class="col-span-6">
+                                    <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
+                                        No existe un cliente con los datos que buscas, puedes registrarlo:
+                                    </h2>
+                                </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
+                                    <input type="text" maxlength="25" name="nombre" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required value="<?php echo $nombre; ?>" data-validate="no-especiales">
+                                </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DNI</label>
+                                    <input type="text" maxlength="15" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="numero" value="<?php echo $dni; ?>">
+                                </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Codigo</label>
+                                    <input type="text" maxlength="25" name="codigo" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales" value="<?php echo $codigo; ?>">
+                                </div>
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefono</label>
+                                    <input type="text" maxlength="15" name="telefono" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="numero" value="<?php echo $telefono; ?>">
+                                </div>
+                                <div class="col-span-6 sm:col-span-2">
+                                    <input type="submit" id="save-product" name="update" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Actualizar Cliente"></input>
+                                    <input type="hidden" name="cliente" value="<?php echo $cliente['id']; ?>">
+                                </div>
+                                <button onclick='window.editar<?php echo $cliente['id']; ?>.close();' type="button" id="cancel-add" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-600 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700">Cancelar </button>
+                            </div>
+                        </form>
+                    </dialog>
                                             <?php
                                         }
                                     }
@@ -161,5 +191,20 @@
         </div>
     </div>
     <script src="../js/main.js"></script> 
+    <script src="../../js/validador.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeBtn = document.querySelector('.close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    <?php 
+                        unset($_SESSION['mensaje_exito']);
+                        unset($_SESSION['mensaje_error']);
+                        unset($_SESSION['mensaje_sql']);
+                    ?>
+                });
+            }
+        });
+    </script>
 </body>
 </html>

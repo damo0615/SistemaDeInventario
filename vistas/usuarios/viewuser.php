@@ -32,11 +32,12 @@
     <title>Sistema de Inventario</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../style.css">
 </head>
 <body class="bg-gray-100 min-h-screen">
     <!-- Barra de navegaci�n -->
     <?php include '../../public/navbar.php'; ?>
-    <div class="pt-16">
+    <div class="pt-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="px-4 py-6 sm:px-0">
     <!-- Header -->
@@ -127,15 +128,20 @@
                             </div>
                         </div>
                     </div>
-                    <a href="../../sesion/logout.php">
-                        <button type="button" id="add-product-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                            <i class="fas fa-x mr-2"></i>Cerrar Sesion
+                        <button type="button" onclick="window.mydialog.showModal()" id="add-product-btn" class="ml-3 float-right inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            <i class="fas fa-x mr-2"></i> Cerrar Sesion
                         </button>
-                    </a>
                 </div>
             </div>
         </div>
     </div>
+    <dialog id="mydialog" class="confirmar">
+      <div class=" md:items-center md:justify-between mb-6">
+        <p>Seguro que quiere cerrar sesion?</p>
+        <button onclick='window.mydialog.close();' class="ml-3 float-right inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">No</button>
+        <a href="\Proyecto\sesion\logout.php"><button class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Si</button></a>
+      </div>
+    </dialog>
 <script src="../../js/main.js"></script>
 </body>
 </html>

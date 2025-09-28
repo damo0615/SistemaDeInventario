@@ -14,18 +14,18 @@
 
         <!-- Menú Principal -->
         <div class="hidden md:flex space-x-6 items-center">
-          <a href="\Proyecto\Hello\vistas\Dashboard.php" class="hover:text-yellow-700">Dashboard</a>
-          <a href="\Proyecto\Hello\vistas\caja.php" class="hover:text-yellow-700">Caja</a>
-          <a href="\Proyecto\Hello\vistas\clientes.php" class="hover:text-yellow-700">Cliente</a>
+          <a href="\Proyecto\vistas\Dashboard.php" class="hover:text-yellow-700">Dashboard</a>
+          <a href="\Proyecto\vistas\caja.php" class="hover:text-yellow-700">Caja</a>
+          <a href="\Proyecto\vistas\clientes.php" class="hover:text-yellow-700">Cliente</a>
 
           <!-- Inventario Dropdown -->
           <div class="relative">
             <button onclick="toggleDropdown('inventarioDropdown')" class="hover:text-yellow-700 focus:outline-none">Inventario</button>
             <div id="inventarioDropdown" class="hidden absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-10">
-              <a href="\Proyecto\Hello\vistas\inventario.php" class="block px-4 py-2 hover:bg-yellow-100">Productos</a>
-              <a href="\Proyecto\Hello\vistas\inventario\Proveedores.php" class="block px-4 py-2 hover:bg-yellow-100">Proveedores</a>
-              <a href="\Proyecto\Hello\vistas\inventario\tags.php" class="block px-4 py-2 hover:bg-yellow-100">Etiquetas</a>
-              <a href="\Proyecto\Hello\vistas\inventario\stock.php" class="block px-4 py-2 hover:bg-yellow-100">Gestión de Stock</a>
+              <a href="\Proyecto\vistas\inventario.php" class="block px-4 py-2 hover:bg-yellow-100">Productos</a>
+              <a href="\Proyecto\vistas\inventario\Proveedores.php" class="block px-4 py-2 hover:bg-yellow-100">Proveedores</a>
+              <a href="\Proyecto\vistas\inventario\tags.php" class="block px-4 py-2 hover:bg-yellow-100">Etiquetas</a>
+              <a href="\Proyecto\vistas\inventario\stock.php" class="block px-4 py-2 hover:bg-yellow-100">Gestión de Stock</a>
             </div>
           </div>
 
@@ -33,12 +33,12 @@
           <div class="relative">
             <button onclick="toggleDropdown('reportesDropdown')" class="hover:text-yellow-700 focus:outline-none">Reportes</button>
             <div id="reportesDropdown" class="hidden absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-10">
-              <a href="\Proyecto\Hello\vistas\reporte.php" class="block px-4 py-2 hover:bg-yellow-100">Resumen</a>
-              <a href="\Proyecto\Hello\vistas\reportes\informes.php" class="block px-4 py-2 hover:bg-yellow-100">Ventas</a>
-              <a href="\Proyecto\Hello\vistas\reportes\informes_stock.php" class="block px-4 py-2 hover:bg-yellow-100">Movimientos Stock</a>
+              <a href="\Proyecto\vistas\reporte.php" class="block px-4 py-2 hover:bg-yellow-100">Resumen</a>
+              <a href="\Proyecto\vistas\reportes\informes.php" class="block px-4 py-2 hover:bg-yellow-100">Ventas</a>
+              <a href="\Proyecto\vistas\reportes\informes_stock.php" class="block px-4 py-2 hover:bg-yellow-100">Movimientos Stock</a>
               <?php 
                 if ($_SESSION['rol'] < 3) {
-                  echo '<a href="\Proyecto\Hello\vistas\reportes\bitacora.php" class="block px-4 py-2 hover:bg-yellow-100">Bitacora</a>';
+                  echo '<a href="\Proyecto\vistas\reportes\bitacora.php" class="block px-4 py-2 hover:bg-yellow-100">Bitacora</a>';
                 }
               ?>
             </div>
@@ -69,10 +69,10 @@
             </div>
             <?php 
                 if ($_SESSION['rol'] < 3) {
-                  echo '<a href="\Proyecto\Hello\vistas\usuarios\alluser.php" class="block px-4 py-2 hover:bg-yellow-100">Ver todos los usuarios</a>';
+                  echo '<a href="\Proyecto\vistas\usuarios\alluser.php" class="block px-4 py-2 hover:bg-yellow-100">Ver todos los usuarios</a>';
                 }
               ?>
-            <a href="\Proyecto\Hello\vistas\usuarios\viewuser.php" class="block px-4 py-2 hover:bg-yellow-100">Mi perfil</a>
+            <a href="\Proyecto\vistas\usuarios\viewuser.php" class="block px-4 py-2 hover:bg-yellow-100">Mi perfil</a>
             <a onclick="window.confirmar.showModal();" href="#" class="block px-4 py-2 hover:bg-yellow-100 text-red-600">Cerrar sesión</a>
           </div>
         </div>
@@ -84,7 +84,7 @@
   <div class=" md:items-center md:justify-between mb-6">
     <p>Seguro que quiere cerrar sesion?</p>
     <button onclick='window.confirmar.close();' class="ml-3 float-right inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">No</button>
-    <a href="\Proyecto\Hello\sesion\logout.php"><button class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Si</button></a>
+    <a href="\Proyecto\sesion\logout.php"><button class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Si</button></a>
   </div>
 </dialog>
 

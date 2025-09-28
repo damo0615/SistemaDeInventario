@@ -18,6 +18,12 @@
 					if(!$query){
 			        	die("Query Failed");
 			        }else{
+			        	$id_user = $_SESSION['id'];
+			            $accion = 'El usuario '.$_SESSION['usern'].' ha borrado un Proveedor';
+			            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+			            if(!$bitacora){
+			                die("Query Failed");
+			            }
 			        	$_SESSION['mensaje_exito'] = "Proveedor eliminado con exito";
 			        	header('location:../proveedores.php');
 			        }

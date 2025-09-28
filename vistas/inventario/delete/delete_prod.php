@@ -24,7 +24,13 @@
 						if(!$borrar){
 			                die("Query Failed");
 			            }
-			            $_SESSION['mensaje_exito'] = "producto eliminado con exito";
+			            $id_user = $_SESSION['id'];
+			            $accion = 'El usuario '.$_SESSION['usern'].' ha borrado un producto';
+			            $bitacora = mysqli_query($conn, "INSERT INTO bitacora (accion,id_user) VALUES ('$accion','$id_user')");
+			            if(!$bitacora){
+			                die("Query Failed");
+			            }
+						            $_SESSION['mensaje_exito'] = "producto eliminado con exito";
 			             header('location:../../inventario.php');
 					}
 				}

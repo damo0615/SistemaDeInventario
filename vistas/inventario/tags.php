@@ -173,7 +173,7 @@
             <dialog id="mydialog<?php echo $id; ?>">
                 <p>Agregue el nuevo nombre de la etiqueta</p>
                 <form action="tags.php" method="POST">
-                    <input type="text" maxlength="25" name="name">
+                    <input type="text" maxlength="25" name="name" data-validate="no-especiales">
                     <input type="hidden" name="id" value="<?php echo $id;?>">
                     <input type="submit" name="update" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Enviar"></input>
                 </form>
