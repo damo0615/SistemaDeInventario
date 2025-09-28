@@ -71,7 +71,7 @@
                         <?php
                             if($_SESSION['rol'] != 3){ ?>
                                 <form action="tags.php" method="POST">
-                            <input type="text" maxlength="25" name="name" class="border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-white-500 hover:bg-white-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white-500" required>
+                            <input type="text" maxlength="25" name="name" class="border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-white-500 hover:bg-white-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white-500" required data-validate="no-especiales">
                             <input type="submit" name="send" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" value="Agregar">
                         </form><?php
                                 }
@@ -118,20 +118,20 @@
             <?php endif; ?>
         </div>
         <table>
-                    <thead>
-                        <th><h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Buscar por:</h3></th>
-                    </thead>
-                    <tbody>
-                        <form method="POST">
-                            <td>
-                                <input type="text" name="texto" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white">
-                            </td>
-                            <td>
-                                <input type="submit" name="buscar" value="Buscar" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 float-right">
-                            </td>  
-                        </form>
-                    </tbody>
-                </table>
+            <thead>
+                <th><h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Buscar por:</h3></th>
+            </thead>
+            <tbody>
+                <form method="POST">
+                    <td>
+                        <input type="text" name="texto" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" data-validate="no-especiales">
+                    </td>
+                    <td>
+                        <input type="submit" name="buscar" value="Buscar" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 float-right">
+                    </td>  
+                </form>
+            </tbody>
+        </table>
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
             <?php
                 if($query->num_rows > 0){
@@ -211,6 +211,7 @@
         </div>
     </div>
     <script src="../../js/main.js"></script>
+    <script src="../../js/validador.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const closeBtn = document.querySelector('.close-btn');

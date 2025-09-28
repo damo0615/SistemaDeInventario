@@ -74,20 +74,20 @@
                         <div class="grid grid-cols-6 gap-8">
                             <div class="col-span-6">
                                 <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del Usuario</label>
-                                <input type="text" value="<?php echo $fetch_update['nombres'] ?>" name="name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" value="<?php echo $fetch_update['nombres'] ?>" name="name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales">
                             </div>
                             <div class="col-span-6">
                                 <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DNI del Usuario</label>
-                                <input type="number" maxlength="25" value="<?php echo $fetch_update['dni'] ?>" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="number" maxlength="25" value="<?php echo $fetch_update['dni'] ?>" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="numero">
                             </div>
                             <div class="col-span-6">
                                 <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email del Usuario</label>
-                                <input type="email" value="<?php echo $fetch_update['email'] ?>" name="email" id="user-email" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="email" value="<?php echo $fetch_update['email'] ?>" name="email" id="user-email" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="email">
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
-                                <input type="text" maxlength="25" value="<?php echo $fetch_update['username'] ?>" name="username" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="25" value="<?php echo $fetch_update['username'] ?>" name="username" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales">
                             </div>                         
                             
                             
@@ -110,5 +110,6 @@
     </div>
     
     <script src="../../js/main.js"></script>
+    <script src="../../js/validador.js"></script>
 </body>
 </html>

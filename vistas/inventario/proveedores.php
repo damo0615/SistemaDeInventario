@@ -1,12 +1,19 @@
 <?php
     include '../../sesion_time.php';
+    include '../../vistas/php_inyec.php';
     include '../../db/db.php';
     session_start();
     $user_id = $_SESSION['id'];
     if(!isset($user_id)) {
         header("location:../../sesion/login.php");
     }
-    $query = mysqli_query($conn, "SELECT * FROM proveedor");
+    $query = mysqli_query($conn, "SELECT id,nombrep,direccion,observacion,codigop FROM proveedor");
+    if (isset($_POST['buscar'])) {
+        $busqueda = limpiar_cadena($_POST['texto']);
+        if (!isset($_SESSION['mensaje_sql'])) {
+            $query = mysqli_query($conn, "SELECT id,nombrep,direccion,observacion,codigop FROM proveedor WHERE nombrep = '$busqueda' OR direccion = '$busqueda' OR observacion = '$busqueda' OR codigop = '$busqueda'");
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -79,6 +86,21 @@
                 </div>
             <?php endif; ?>
         </div>
+        <table>
+            <thead>
+                <th><h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Buscar por:</h3></th>
+            </thead>
+            <tbody>
+                <form method="POST">
+                    <td>
+                        <input type="text" name="texto" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" data-validate="no-especiales">
+                    </td>
+                    <td>
+                        <input type="submit" name="buscar" value="Buscar" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 float-right">
+                    </td>  
+                </form>
+            </tbody>
+        </table>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-700">
@@ -180,25 +202,25 @@
                             <div class="mt-1 relative rounded-md shadow-sm">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 </div>
-                                <input type="text" maxlength="25" name="name-prov" id="product-price" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="25" name="name-prov" id="product-price" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales">
                             </div>
                         </div>
                         <div class="col-span-6 sm:col-span-3">
                             <label for="product-price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Codigo</label>
                             <div class="mt-1 relative rounded-md shadow-sm">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" data-validate="no-especiales">
                                 </div>
-                                <input type="text" maxlength="25" name="cod-prov" id="product-price" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                <input type="text" maxlength="25" name="cod-prov" id="product-price" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales">
                             </div>
                         </div>
                         <div class="col-span-6">
                             <label for="product-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Direccion</label>
-                            <input type="text" maxlength="100" name="dir-prov" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                            <input type="text" maxlength="100" name="dir-prov" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales">
                         </div>
                             
                         <div class="col-span-6">
                             <label for="product-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Observaciones</label>
-                            <textarea maxlength="100" id="product-description" name="obser-prov" rows="3" class="mt-1 shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required></textarea>
+                            <textarea maxlength="100" id="product-description" name="obser-prov" rows="3" class="mt-1 shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales"></textarea>
                         </div>
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse dark:bg-gray-700">
@@ -212,6 +234,7 @@
     </div>
     </div>
     <script src="../../js/main.js"></script>
+    <script src="../../js/validador.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const closeBtn = document.querySelector('.close-btn');

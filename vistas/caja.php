@@ -221,10 +221,10 @@
                                 <form id="add-form">
                                     <div class="grid grid-cols-6 gap-8">
                                         <div class="col-span-6 sm:col-span-3">
-                                            <input type="text" maxlength="25" id="codigo_producto" placeholder="Código de Producto" list="codigos" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                            <input type="text" maxlength="25" id="codigo_producto" placeholder="Código de Producto" list="codigos" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales">
                                         </div>
                                         <div class="col-span-6 sm:col-span-1">
-                                            <input type="number" min="1" max="200" maxlength="3" id="cantidad_producto" placeholder="Cantidad" min="1" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                                            <input type="number" min="1" max="200" maxlength="3" id="cantidad_producto" placeholder="Cantidad" min="1" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="numero">
                                         </div>
                                         <div class="col-span-6 sm:col-span-1">
                                             <button type="submit" id="add-btn" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">Agregar</button>
@@ -311,7 +311,7 @@
                 </div>
                 <div class="col-span-6 sm:col-span-3">
                     <label for="user-name" class="block text-sm font-medium text-white-700 dark:text-white-300">.</label>
-                    <input type="text" maxlength="25" name="busqueda" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required>
+                    <input type="text" maxlength="25" name="busqueda" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales">
                 </div>
                 <div class="col-span-6 sm:col-span-3">
                     <input type="submit" id="save-product" name="buscar" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Buscar Usuario"></input>
@@ -336,19 +336,19 @@
                             </div>
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del Cliente</label>
-                                    <input type="text" maxlength="25" name="name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $nombre;?>" required >
+                                    <input type="text" maxlength="25" name="name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $nombre;?>" required data-validate="no-especiales">
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DNI</label>
-                                    <input type="text" maxlength="25" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $dni;?>" required >
+                                    <input type="text" maxlength="25" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $dni;?>" required data-validate="numero">
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="codigo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Codigo</label>
-                                    <input type="text" maxlength="25" name="codigo" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $codigo;?>" required >
+                                    <input type="text" maxlength="25" name="codigo" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $codigo;?>" required data-validate="no-especiales">
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="telefono" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefono</label>
-                                    <input type="text" maxlength="25" name="telefono" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $telefono;?>" required >
+                                    <input type="text" maxlength="25" name="telefono" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" value="<?php echo $telefono;?>" required data-validate="numero">
                                 </div>
                                 <div class="col-span-6 sm:col-span-2">
                                     <input type="submit" id="save-product" name="confirmar" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="confirmar"></input>
@@ -367,19 +367,19 @@
                         </div>
                         <div class="col-span-6 sm:col-span-3">
                             <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre</label>
-                            <input type="text" maxlength="25" name="name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required value="<?php echo $busqueda;?>">
+                            <input type="text" maxlength="25" name="name" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required value="<?php echo $busqueda;?>" data-validate="no-especiales">
                         </div>
                         <div class="col-span-6 sm:col-span-3">
                             <label for="dni" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DNI</label>
-                            <input type="text" maxlength="25" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required >
+                            <input type="text" maxlength="25" name="dni" id="product-name" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="numero">
                         </div>
                         <div class="col-span-6 sm:col-span-3">
                             <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Codigo</label>
-                            <input type="text" maxlength="25" name="codigo" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required >
+                            <input type="text" maxlength="25" name="codigo" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="no-especiales">
                         </div>
                         <div class="col-span-6 sm:col-span-3">
                             <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefono</label>
-                            <input type="text" maxlength="25" name="telefono" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required >
+                            <input type="text" maxlength="25" name="telefono" id="product-stock" class="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md dark:bg-gray-600 dark:border-gray-500 dark:text-white" required data-validate="numero">
                         </div>
                         <div class="col-span-6 sm:col-span-2">
                             <input type="submit" id="save-product" name="send" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-500 text-base font-medium text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm" value="Guardar Usuario"></input>

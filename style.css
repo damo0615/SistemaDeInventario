@@ -220,3 +220,10 @@ textarea{
     animation-fill-mode: forwards; /* Mantiene la posición final del div */
     animation-iteration-count: 1;
 }
+.error { border: 2px solid red !important; }
+.success { border: 2px solid green !important; }
+.mensaje-error { 
+    color: red; 
+    font-size: 12px;
+    display: none;
+}
