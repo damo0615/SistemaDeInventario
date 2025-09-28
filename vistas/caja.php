@@ -44,117 +44,118 @@
         if(!$query_cliente){
             die("Query Failed");
         }
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar_movimiento'])) {
-        $lista_productos = json_decode($_POST['lista_productos'], true);
-        $cliente_id = $_POST['cliente'];
+        echo "hola";
+    }
+    if (isset($_POST['procesar_movimiento'])) {
+            $lista_productos = json_decode($_POST['lista_productos'], true);
+            $cliente_id = $_POST['cliente'];
+            echo "hola";
 
-        // Iniciar la transacción para asegurar la consistencia de los datos
-        mysqli_begin_transaction($conn);
-        $todo_ok = true;
-        $mensaje_error = '';
+            // Iniciar la transacción para asegurar la consistencia de los datos
+            mysqli_begin_transaction($conn);
+            $todo_ok = true;
+            $mensaje_error = '';
 
-        if (!is_array($lista_productos) || empty($lista_productos)) {
-            $todo_ok = false;
-            $mensaje_error = "No hay productos en la lista para procesar.";
-        }
-        $sub_total = 0;
-        foreach ($lista_productos as $producto) {
-            $cantidad = (int)$producto['cantidad'];
-            $precio = $producto['precio'];
-            $pro_total = $cantidad * $precio;
-            $sub_total += $pro_total; 
-        }
-        if ($todo_ok) {
-            //Guardar el movimiento en la tabla compra
-            $sql_compra = "INSERT INTO compra (id_user, id_cliente, fecha, total) VALUES (?, ?, NOW(), ?)";
-            $stmt_compra = mysqli_prepare($conn, $sql_compra);
-            mysqli_stmt_bind_param($stmt_compra, "iid", $user_id, $cliente_id, $sub_total);
-            if (!mysqli_stmt_execute($stmt_compra)) {
-                throw new Exception("Error al registrar el movimiento");
-            }else{
-                $id_venta = $conn->insert_id;
-                    foreach ($lista_productos as $producto) {
-                        $id_producto = $producto['id'];
-                        $cantidad = (int)$producto['cantidad'];
-                        $precio = $producto['precio'];
+            if (!is_array($lista_productos) || empty($lista_productos)) {
+                $todo_ok = false;
+                $mensaje_error = "No hay productos en la lista para procesar.";
+            }
+            $sub_total = 0;
+            foreach ($lista_productos as $producto) {
+                $cantidad = (int)$producto['cantidad'];
+                $precio = $producto['precio'];
+                $pro_total = $cantidad * $precio;
+                $sub_total += $pro_total; 
+            }
+            if ($todo_ok) {
+                //Guardar el movimiento en la tabla compra
+                $sql_compra = "INSERT INTO compra (id_user, id_cliente, fecha, total) VALUES (?, ?, NOW(), ?)";
+                $stmt_compra = mysqli_prepare($conn, $sql_compra);
+                mysqli_stmt_bind_param($stmt_compra, "iid", $user_id, $cliente_id, $sub_total);
+                if (!mysqli_stmt_execute($stmt_compra)) {
+                    $_SESSION['mensaje_error'] = "Error al registrar el movimiento";
+                    throw new Exception("Error al registrar el movimiento");
+                }else{
+                    $id_venta = $conn->insert_id;
+                        foreach ($lista_productos as $producto) {
+                            $id_producto = $producto['id'];
+                            $cantidad = (int)$producto['cantidad'];
+                            $precio = $producto['precio'];
 
-                        if ($cantidad <= 0) {
-                            $_SESSION['mensaje_error'] = "Error al registrar el movimiento, verifique que cuenta con el stock necesario de cada producto";
-                        break;
-                        }
+                            if ($cantidad <= 0) {
+                                $_SESSION['mensaje_error'] = "Error al registrar el movimiento, verifique que cuenta con el stock necesario de cada producto";
+                                break;
+                            }
+                            if ($todo_ok) {
+                                //Guardar el movimiento en la tabla compra
+                                $sql_compra_det = "INSERT INTO detalles_compra (id_compra, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
+                                $stmt_compra_det = mysqli_prepare($conn, $sql_compra_det);
+                                mysqli_stmt_bind_param($stmt_compra_det, "iiid", $id_venta, $id_producto, $cantidad, $precio);
+                                if (!mysqli_stmt_execute($stmt_compra_det)) {
+                                    $_SESSION['mensaje_error'] = "Error al registrar el movimiento";
+                                    throw new Exception("Error al registrar el movimiento");
+                                }
+                            }
+
+                            try {
+                                $sql_inventario = "SELECT id, cantidad FROM inventario WHERE id_producto = ?";
+                                $stmt_inventario = mysqli_prepare($conn, $sql_inventario);
+                                mysqli_stmt_bind_param($stmt_inventario, "i", $id_producto);
+                                mysqli_stmt_execute($stmt_inventario);
+                                $result = mysqli_stmt_get_result($stmt_inventario);
+                                
+                                if (mysqli_num_rows($result) === 0) {
+                                    $_SESSION['mensaje_error'] = "No se encontro el podructo en el inventario";
+                                    throw new Exception("Producto con ID '" . $id_producto . "' no encontrado en el inventario.");
+                                }
+                                $row = mysqli_fetch_assoc($result);
+                                $id_inventario = $row['id'];
+                                $cantidad_actual = $row['cantidad'];
+                        
+                                // Calcular la nueva cantidad
+                                $nueva_cantidad = $cantidad_actual;
+                                if ($cantidad_actual < $cantidad) {
+                                    $_SESSION['mensaje_error'] = "Error al registrar el movimiento, no hay stock suficiente para proceder";
+                                    throw new Exception("Stock insuficiente para " . $producto['nombre'] . ". Disponible: $cantidad_actual");
+                                }
+                                $nueva_cantidad -= $cantidad;
+                                
+                                
+                                // Actualizar la cantidad en la tabla 'Inventario'
+                                $sql_update = "UPDATE inventario SET cantidad = ? WHERE id = ?";
+                                $stmt_update = mysqli_prepare($conn, $sql_update);
+                                mysqli_stmt_bind_param($stmt_update, "ii", $nueva_cantidad, $id_inventario);
+                                if (!mysqli_stmt_execute($stmt_update)) {
+                                    $_SESSION['mensaje_error'] = "Error al actualizar el inventario";
+                                    throw new Exception("Error al actualizar el inventario para el producto " . $producto['nombre'] . ".");
+                                }
+
+                                // Registrar el movimiento en la tabla 'movimiento_inventario'
+                                $sql_movimiento = "INSERT INTO movimientos_inventario (id_inv, tipo,cantidad, fecha, cantidad_actual) VALUES (?, 'V', ?, NOW(), ?)";
+                                $stmt_movimiento = mysqli_prepare($conn, $sql_movimiento);
+                                mysqli_stmt_bind_param($stmt_movimiento, "iii", $id_inventario, $cantidad, $nueva_cantidad);
+                                if (!mysqli_stmt_execute($stmt_movimiento)) {
+                                    $_SESSION['mensaje_error'] = "Error al registrar el movimiento para el producto". $producto['nombre'];
+                                    throw new Exception("Error al registrar el movimiento para el producto " . $producto['nombre'] . ".");
+                                }
+
+                            } catch (Exception $e) {
+                                $todo_ok = false;
+                                $mensaje_error = $e->getMessage();
+                                break; // Detener el bucle si hay un error
+                            }
+                        } // Fin del bucle foreach
                         if ($todo_ok) {
-                            //Guardar el movimiento en la tabla compra
-                            $sql_compra_det = "INSERT INTO detalles_compra (id_compra, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
-                            $stmt_compra_det = mysqli_prepare($conn, $sql_compra_det);
-                            mysqli_stmt_bind_param($stmt_compra_det, "iiid", $id_venta, $id_producto, $cantidad, $precio);
-                            if (!mysqli_stmt_execute($stmt_compra_det)) {
-                                $_SESSION['mensaje_error'] = "Error al registrar el movimiento";
-                                throw new Exception("Error al registrar el movimiento");
-                            }
-                        }
+                        mysqli_commit($conn);
+                        $_SESSION['mensaje_exito'] = "La operacion fue realizada con exito"; 
+                         $mensaje_exito = "Todas las operaciones de pedido realizadas con éxito.";
+                        } else {
+                             mysqli_rollback($conn);
+                        } 
 
-                        try {
-
-                            // Obtener el ID del inventario y la cantidad actual del producto
-                            $sql_inventario = "SELECT id, cantidad FROM inventario WHERE id_producto = ?";
-                            $stmt_inventario = mysqli_prepare($conn, $sql_inventario);
-                            mysqli_stmt_bind_param($stmt_inventario, "i", $id_producto);
-                            mysqli_stmt_execute($stmt_inventario);
-                            $result = mysqli_stmt_get_result($stmt_inventario);
-                            
-                            if (mysqli_num_rows($result) === 0) {
-                                $_SESSION['mensaje_error'] = "No se encontro el podructo en el inventario";
-                                throw new Exception("Producto con ID '" . $id_producto . "' no encontrado en el inventario.");
-                            }
-                            $row = mysqli_fetch_assoc($result);
-                            $id_inventario = $row['id'];
-                            $cantidad_actual = $row['cantidad'];
-                    
-                            // Calcular la nueva cantidad
-                            $nueva_cantidad = $cantidad_actual;
-                            if ($cantidad_actual < $cantidad) {
-                                $_SESSION['mensaje_error'] = "Error al registrar el movimiento, no hay stock suficiente para proceder";
-                                throw new Exception("Stock insuficiente para " . $producto['nombre'] . ". Disponible: $cantidad_actual");
-                            }
-                            $nueva_cantidad -= $cantidad;
-                            
-                            
-                            // Actualizar la cantidad en la tabla 'Inventario'
-                            $sql_update = "UPDATE inventario SET cantidad = ? WHERE id = ?";
-                            $stmt_update = mysqli_prepare($conn, $sql_update);
-                            mysqli_stmt_bind_param($stmt_update, "ii", $nueva_cantidad, $id_inventario);
-                            if (!mysqli_stmt_execute($stmt_update)) {
-                                $_SESSION['mensaje_error'] = "Error al actualizar el inventario";
-                                throw new Exception("Error al actualizar el inventario para el producto " . $producto['nombre'] . ".");
-                            }
-
-                            // Registrar el movimiento en la tabla 'movimiento_inventario'
-                            $sql_movimiento = "INSERT INTO movimientos_inventario (id_inv, tipo,cantidad, fecha, cantidad_actual) VALUES (?, 'V', ?, NOW(), ?)";
-                            $stmt_movimiento = mysqli_prepare($conn, $sql_movimiento);
-                            mysqli_stmt_bind_param($stmt_movimiento, "iii", $id_inventario, $cantidad, $nueva_cantidad);
-                            if (!mysqli_stmt_execute($stmt_movimiento)) {
-                                $_SESSION['mensaje_error'] = "Error al registrar el movimiento para el producto". $producto['nombre'];
-                                throw new Exception("Error al registrar el movimiento para el producto " . $producto['nombre'] . ".");
-                            }
-
-                        } catch (Exception $e) {
-                            $todo_ok = false;
-                            $mensaje_error = $e->getMessage();
-                            break; // Detener el bucle si hay un error
-                        }
-                    } // Fin del bucle foreach
-                    if ($todo_ok) {
-                    mysqli_commit($conn);
-                    $_SESSION['mensaje_exito'] = "La operacion fue realizada con exito"; 
-                     $mensaje_exito = "Todas las operaciones de pedido realizadas con éxito.";
-                    } else {
-                         mysqli_rollback($conn);
-                    } 
-
+                    }
                 }
             }
-        }    
-    }
 
 
     // Obtener la lista de productos para el autocompletado y búsqueda
