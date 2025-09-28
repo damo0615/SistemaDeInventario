@@ -1,4 +1,5 @@
-usuario: Admin
+usuario: Administrador
+email = admin@admin.com
 contraseña: aKbeP5z2ZChrR@5Hola
-pregunta 1: Real Madrid
-pregunta 2: Cristiano Jr
+pregunta 1: Pizza
+pregunta 2: Quesillo

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-09-2025 a las 16:37:18
+-- Tiempo de generación: 28-09-2025 a las 16:59:33
 -- Versión del servidor: 10.1.37-MariaDB
 -- Versión de PHP: 7.3.1
 
@@ -42,7 +42,15 @@ CREATE TABLE `bitacora` (
 INSERT INTO `bitacora` (`id`, `accion`, `fecha_accion`, `id_user`) VALUES
 (1, 'El usuario Loquesea ha iniciado sesion', '2025-09-28 09:49:36', 11),
 (2, 'El usuario Loquesea ha cerrado sesion', '2025-09-28 09:52:02', 11),
-(3, 'El usuario Admin ha iniciado sesion', '2025-09-28 09:52:23', 1);
+(3, 'El usuario Admin ha iniciado sesion', '2025-09-28 09:52:23', 1),
+(4, 'El usuario Admin ha iniciado sesion', '2025-09-28 10:11:41', 1),
+(5, 'El usuario Admin ha registrado un cliente', '2025-09-28 10:17:00', 1),
+(6, 'El usuario Admin ha actualizado un cliente', '2025-09-28 10:17:13', 1),
+(7, 'El usuario Admin ha actualizado un cliente', '2025-09-28 10:17:51', 1),
+(8, 'El usuario Admin ha cerrado sesion', '2025-09-28 10:21:42', 1),
+(9, 'El usuario Admin ha iniciado sesion', '2025-09-28 10:22:37', 1),
+(10, 'El usuario Admin ha creado un nuevo usuario', '2025-09-28 10:24:33', 1),
+(11, 'El usuario Admin ha cerrado sesion', '2025-09-28 10:24:53', 1);
 
 -- --------------------------------------------------------
 
@@ -57,6 +65,13 @@ CREATE TABLE `clientes` (
   `dni` varchar(10) NOT NULL,
   `telefono` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `clientes`
+--
+
+INSERT INTO `clientes` (`id`, `nombrec`, `codigo`, `dni`, `telefono`) VALUES
+(1, 'Fulano', 1, '1234567890', '023546');
 
 -- --------------------------------------------------------
 
@@ -235,7 +250,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id`, `nombres`, `dni`, `username`, `email`, `password`, `id_permiso`, `estatus`, `pregunta1`, `respuesta1`, `pregunta2`, `respuesta2`) VALUES
-(1, 'Administrador', '000000012', 'Admin', 'admin@gmail.com', '$2y$12$QaOUIOFPuGxDnH0oFgrQ0.bodN3UmyoKmmXUyX0fauJlOaxeUoOfC', 1, 1, 'jdHZ4OeFttHWkw==', '$2y$12$Yuiz6EXZSeaS/l9eiXunFOnZs/n4yw9zFJQ9B3K.7lSThrsx.aODW', 'iNXZ4JWy1N7Qow==', '$2y$12$j2qFWOil/2PbihCjfVzO2u35/.s9HC/Y.OtHuSjog2FYv5lXgAPKi');
+(1, 'Administrador Final', '123421212', 'Administrador', 'admin@admin.com', '$2y$12$fgtxGz9Q0kcUZsUE38MDVedWgL/WAnBYRU3tYjm4s9bpjgEScjbpS', 1, 1, 'eabOncqThX7Fpw==', '$2y$12$/dpHUlRpLSzqoEG.T0bM7ei6F9d4aturPdd4JSW.YnmtEPEcuYmGK', 'hqbUqNiXhX7Fp9Kry6fQ', '$2y$12$6I6LnlKBlUgsFhQTt5XpiudH2pHi.Au9IQF1Jt48SPJ5VjL/Azzdy');
 
 --
 -- Índices para tablas volcadas
@@ -328,13 +343,13 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `compra`
@@ -394,7 +409,7 @@ ALTER TABLE `tag`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Restricciones para tablas volcadas
