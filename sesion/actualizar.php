@@ -20,7 +20,6 @@
                     if(!$query){
                         die("Query Failed");
                     }
-                    $_SESSION['mensaje_exito'] = "Contraseña actualizada";
                     header('location:login.php');
                 }else{
                     echo "<script>window.alert('Las Contraseñas deben coincidir')</script>";
