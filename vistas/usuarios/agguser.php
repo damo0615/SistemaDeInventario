@@ -90,7 +90,7 @@
                         </h3>
                     </div>
                     <div class="mt-2">
-                        <form action="agregar_usuario.php" method="POST">
+                        <form action="agguser.php" method="POST">
                         <div class="grid grid-cols-6 gap-8">
                             <div class="col-span-6">
                                 <label for="user-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre del Usuario</label>
