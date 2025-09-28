@@ -38,6 +38,7 @@
         $query = mysqli_query($conn, "SELECT codigo,dni FROM clientes WHERE codigo='$codigo' OR dni='$dni'")
         if ($query -> num_rows < 0) {
             $_SESSION['mensaje_error'] = "Ya esta el codigo o el dni asociado a otro cliente, por favor intente con otro";
+            header("location:clientes.php");
         }
         $query = mysqli_query($conn, "INSERT INTO clientes (nombrec,dni,codigo,telefono) VALUES ('$nombre','$dni','$codigo','$telefono')");
         if(!$query){
