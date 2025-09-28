@@ -1,4 +1,4 @@
-usuario: Loquesea
+usuario: Admin
 contraseña: aKbeP5z2ZChrR@5Hola
-pregunta 1: Toyota
-pregunta 2: Quesillo
+pregunta 1: Real Madrid
+pregunta 2: Cristiano Jr

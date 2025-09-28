@@ -19,7 +19,7 @@
           window.alerta.showModal();
           extenderSesion();
         }
-      },300);
+      },1200);
       function extenderSesion(){ 
         let timeLeft = 30;
 

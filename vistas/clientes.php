@@ -10,7 +10,6 @@
     $query = mysqli_query($conn, "SELECT id,nombrec, codigo, dni, telefono FROM clientes");
     
     if (!empty($_POST['update'])) {
-        echo "Activo";
         $nombre = limpiar_cadena($_POST['nombre']);
         $codigo = limpiar_cadena($_POST['codigo']);
         $dni = limpiar_cadena($_POST['dni']);
@@ -27,6 +26,7 @@
             if(!$bitacora){
                 die("Query Failed");
             }
+            $query = mysqli_query($conn, "SELECT id,nombrec, codigo, dni, telefono FROM clientes");
             $_SESSION['mensaje_exito'] = 'cliente editado con exito';
         }
     }
@@ -152,7 +152,7 @@
                             <div class="grid grid-cols-6 gap-8">
                                 <div class="col-span-6">
                                     <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate dark:text-white">
-                                        No existe un cliente con los datos que buscas, puedes registrarlo:
+                                        Editar Datos del Cliente:
                                     </h2>
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
