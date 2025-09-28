@@ -49,7 +49,6 @@
     if (isset($_POST['procesar_movimiento'])) {
             $lista_productos = json_decode($_POST['lista_productos'], true);
             $cliente_id = $_POST['cliente'];
-            echo "hola";
 
             // Iniciar la transacción para asegurar la consistencia de los datos
             mysqli_begin_transaction($conn);
@@ -155,7 +154,7 @@
 
                     }
                 }
-            }
+            }   
 
 
     // Obtener la lista de productos para el autocompletado y búsqueda
