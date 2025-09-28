@@ -204,7 +204,7 @@
                         </table>
                     </div>
                 </div>
-    <dialog id="mydialog" class="pop">
+    <dialog id="mydialog" class="confirmar">
         <div class="popitems">
             <h1>¿Seguro que quiere cerrar sesion?</h1>
             <br>
